@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обработка событий в JavaScript</title>
+    <style>
+        body {
+            padding: 50px 150px;
+        }
+    </style>
+</head>
+<body>
+    <input type="button" id="bgCol" value="Изменить цвет фона"><br><br>
+    <input type="text" placeholder="Введите что-нибудь" id="length">
+    <label for="length" id="lab"></label>
+    <script>
+        const bg = document.getElementById("bgCol"); // Кнопка изменить текст
+        const text = document.getElementById("length"); // Кнопка вычисления длины
+        const lab = document.getElementById("lab"); // Label вывод результата
+
+        function getRandomArbitrary(min, max) { // Функция расчёта рандомного числа
+            return Math.random() * (max - min) + min;
+        }
+
+        bg.addEventListener('click', () => { // Обработка клика кнопки изменения фона, bgcolor с тремя рандомными значениями rgb
+            var colOne = getRandomArbitrary(1, 255);
+            var colTwo = getRandomArbitrary(1, 255);
+            var colThree = getRandomArbitrary(1, 255);
+
+            document.body.style.backgroundColor = `rgb(${colOne}, ${colTwo}, ${colThree})`;
+        });
+
+        text.addEventListener('mouseover', () => { // Граница и тень при наведении на инпут
+            text.style.boxShadow = '4px 4px 8px 0px rgb(34, 60, 80)';
+            text.style.border = '1px solid black';
+        });
+    
+        text.addEventListener('mouseout', () => { // Удаление тени при выходе курсора
+            text.style.boxShadow = 'none';
+        });
+
+        text.addEventListener('input', (event) => { // Вывод длины текста при вводе в инпут
+            lab.textContent = `Длина текста: ${event.target.value.length}`;
+        });
+    </script>
+</body>
+</html>
