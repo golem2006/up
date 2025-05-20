@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объект Event и его свойства</title>
+    <style>
+        body {
+            padding: 50px 150px;
+            font-size: 21px;
+            background-color: rgb(222, 222, 222);
+        }
+        form {
+            margin-top: 30px;
+        }
+        form * {
+            display: block;
+            margin-bottom: 30px;
+        }
+        #textOut {
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.3 Объект Event и его свойства</h1>
+    <h2>Задание 1: Изучение свойств события</h2>
+
+    <button id="myButton">Нажми меня</button>
+    <div id="output"></div>
+
+    <h2>Задание 2: Отмена действия по умолчанию</h2>
+    <a id="myLink" href="https://example.com">Перейти на example.com</a>
+
+    <h2>Задание 3: Остановка всплытия</h2>
+    <div id="parent" style="padding: 20px; background: lightblue;">
+        <button id="child">Кнопка внутри div</button>
+    </div>
+
+    <h2>Задание 4: Работа с разными типами событий</h2>
+    <input type="text" id="myInput">
+    <div id="keyInfo"></div>
+
+    <h2>Самостоятельная работа</h2>
+    <button onclick="test()"><a id="nestLink1" href="#">Вложенная ссылка<br>с остановкой всплытия</a></button>
+    <button onclick="test()"><a id="nestLink2" href="#">Вложенная ссылка<br>без остановки всплытия</a></button>
+    <form name="form1" id="form1">
+        <textarea rows="11" cols="45" disabled id="textOut" name="input1"></textarea>
+        <input type="submit" id="inputSubmit1" name="inputSubmit1">
+    </form>
+        
+
+
+<script>
+  const button = document.getElementById('myButton');
+  const output = document.getElementById('output');
+  const link = document.getElementById('myLink');
+  const parent = document.getElementById('parent');
+  const child = document.getElementById('child');
+  const input = document.getElementById('myInput');
+  const keyInfo = document.getElementById('keyInfo');
+  const samNestLink1 = document.getElementById('nestLink1');
+  const samNestLink2 = document.getElementById('nestLink2');
+  const samOut = document.getElementById('textOut');
+  const samSub = document.getElementById('inputSubmit1');
+  const samForm = document.getElementById('form1');
+
+  button.addEventListener('click', function(event) { // Задание 1
+    let info = `
+      Тип события: ${event.type}<br>
+      Целевой элемент: ${event.target.tagName}<br>
+      Текущий элемент: ${event.currentTarget.tagName}<br>
+      Всплывает: ${event.bubbles}<br>
+      Можно отменить: ${event.cancelable}<br>
+      Фаза события: ${event.eventPhase}
+    `;
+    output.innerHTML = info;
+  });
+
+  link.addEventListener('click', function(event) { // Задание 2
+    event.preventDefault();
+    console.log('Переход по ссылке отменен');
+  });
+  
+  parent.addEventListener('click', function() { // Задание 3
+    console.log('Клик по родителю');
+  });
+  
+  child.addEventListener('click', function(event) {
+    console.log('Клик по кнопке');
+    event.stopPropagation();
+  });
+  
+  input.addEventListener('keydown', function(event) { // Задание 4
+    keyInfo.textContent = `Нажата клавиша: ${event.key}, Код: ${event.code}`;
+  });
+  
+  input.addEventListener('mousemove', function(event) {
+    console.log(`Координаты мыши: X=${event.clientX}, Y=${event.clientY}`);
+  });
+
+// Самостоятельная
+  samForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    let info = `
+      Отмена действия по умолчанию для формы
+      (страница не перезагружается)
+
+      Тип события: ${event.type}
+      Целевой элемент: ${event.target.tagName}
+      Текущий элемент: ${event.currentTarget.tagName}
+      Всплывает: ${event.bubbles}
+      Можно отменить: ${event.cancelable}
+      Фаза события: ${event.eventPhase}
+    `;
+    samOut.innerHTML = info;
+  });
+
+  function test() { // Выполниется при нажатии на кнопку родитель
+    let info = `
+      Событие всплыло до родителя (кнопки)
+      и выполнилась эта функция
+
+      Тип события: ${event.type}
+      Целевой элемент: ${event.target.tagName}
+      Текущий элемент: ${event.currentTarget.tagName}
+      Всплывает: ${event.bubbles}
+      Можно отменить: ${event.cancelable}
+      Фаза события: ${event.eventPhase}
+    `;
+    samOut.innerHTML = info;
+  }
+
+  samNestLink1.addEventListener('click', function(event) { // Выполниется при нажатии на дочерний
+                                                           // элемент ссылку. С остановкой всплытия
+    event.preventDefault();
+    let info = `
+      Остановка всплытия
+
+      Тип события: ${event.type}
+      Целевой элемент: ${event.target.tagName}
+      Текущий элемент: ${event.currentTarget.tagName}
+      Всплывает: ${event.bubbles}
+      Можно отменить: ${event.cancelable}
+      Фаза события: ${event.eventPhase}
+    `;
+    samOut.innerHTML = info;
+    event.stopPropagation();
+  });
+
+  samNestLink2.addEventListener('click', function(event) { // Без останвки всплытия
+    event.preventDefault();
+    
+    // event.stopPropagation();
+
+    // Всплывает до родителя и выполняется test()
+  });
+
+  samOut.addEventListener("mousemove", function(myEvent) { // Кастомное событие myEvent
+    let info = `
+      Кастомное событие движение курсора
+
+      Тип события: ${event.type}
+      Целевой элемент: ${event.target.tagName}
+      Текущий элемент: ${event.currentTarget.tagName}
+      Всплывает: ${event.bubbles}
+      Можно отменить: ${event.cancelable}
+      Фаза события: ${event.eventPhase}
+      Координаты мыши: X=${event.clientX}, Y=${event.clientY}
+    `;
+    samOut.innerHTML = info;
+  });
+
+  let myEvent = new MouseEvent("mousemove", {bubbles: false}); // Создание кастомного события
+  samOut.dispatchEvent(myEvent);
+
+</script>
+</body>
+</html>
