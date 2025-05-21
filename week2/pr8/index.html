@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отличия DOM и BOM</title>
+    <style>
+        container {
+      padding: 20px;
+    }
+
+    #navigation {
+      margin-bottom: 20px;
+    }
+
+    #navigation button {
+      margin-right: 10px;
+    }
+
+    #content {
+      border: 1px solid #ccc;
+      padding: 20px;
+      min-height: 100px;
+    }
+    </style>
+</head>
+<body>
+    <h1>Пр.8 Отличия DOM и BOM</h1>
+    <button id="sec">Запустить секундомер</button>
+    <button id="secStop">Остановить секундомер</button>
+    <p id="secOut"></p>
+
+    <nav id="navigation">
+        <button id="back-btn" disabled>Back</button>
+        <button id="add-to-history-btn1">Add to History #page1</button>
+        <button id="add-to-history-btn2">Add to History #page2</button>
+        <p id="current-url">Current URL: </p>
+      </nav>
+  
+      <div id="content">
+        <h2>Welcome!</h2>
+        <p>This is the initial content.</p>
+      </div>
+    </div>
+    <script>
+        const sec = document.getElementById('sec');
+        const secStop = document.getElementById('secStop');
+        const secOut = document.getElementById('secOut');
+
+        let secunds = 0;
+
+        function tic() { // Каждую секунду перезаписывать текст переменной
+            interval = setInterval(() => { // BOM
+                secunds++;
+                secOut.textContent = (secunds); // DOM
+            }, 1000
+            )
+        }
+        secOut.textContent = (secunds); // 0
+
+        function ticStop() { // Остановка интервальной функции
+            if (interval) {
+                clearInterval(interval);
+            }
+        }
+
+        if (window.screen.width < 600) { // Проверка ширины экрана BOM
+            document.body.style.backgroundColor = 'blue'; // DOM
+        }
+
+        function checkWidth() {
+            if (window.innerWidth < 600) { // Проверка ширины окна
+                document.body.style.backgroundColor = 'tomato';
+            }
+        }
+        window.addEventListener('resize', checkWidth);
+
+        sec.addEventListener('click', tic);
+        secStop.addEventListener('click', ticStop);
+
+        const backBtn = document.getElementById('back-btn');
+    const addToHistoryBtn1 = document.getElementById('add-to-history-btn1');
+    const addToHistoryBtn2 = document.getElementById('add-to-history-btn2');
+    const currentUrlEl = document.getElementById('current-url');
+    const contentDiv = document.getElementById('content');
+    const navigationHistory = [];
+    let currentUrl = window.location.href;
+
+    function updateNavigation() {
+      currentUrl = window.location.href;
+      currentUrlEl.textContent = `Current URL: ${currentUrl}`;
+      backBtn.disabled = navigationHistory.length === 0;
+    }
+
+    function navigateBack() {
+      if (navigationHistory.length > 0) {
+        const previousUrl = navigationHistory.pop();
+        window.history.back();
+        updateNavigation();
+      }
+    }
+
+    backBtn.addEventListener('click', navigateBack);
+
+    window.addEventListener('popstate', function(event) {
+      updateNavigation();
+      // Load content based on URL
+      loadContent(window.location.href);
+    });
+
+    function loadContent(url) {
+        // Simple content loading based on URL hash (example)
+        const hash = url.split('#')[1]; // Get hash from URL
+
+        // Clear existing content
+        contentDiv.innerHTML = '';
+
+        switch (hash) {
+            case 'page1':
+                contentDiv.innerHTML = `
+                  <h2>Page 1</h2>
+                  <p>Content for page 1.</p>
+                  <button onclick="navigateBack()">Back to home</button>
+                  `;
+                break;
+            case 'page2':
+                contentDiv.innerHTML = `
+                  <h2>Page 2</h2>
+                  <p>Content for page 2.</p>
+                  <button onclick="navigateBack()">Back to home</button>
+                  `;
+                break;
+
+            default:
+                contentDiv.innerHTML = `
+                  <h2>Welcome!</h2>
+                  <p>This is the initial content.</p>
+                  `;
+        }
+    }
+
+    function addPage(page) {
+        return function() {
+            console.log(1);
+            const newUrl = window.location.href + page; //  Use URL + hash for demonstration
+            navigationHistory.push(currentUrl);
+            window.history.pushState({path: newUrl}, '', newUrl);
+            updateNavigation();
+            // Load new content
+            loadContent(newUrl);
+        }
+  
+    }
+
+    var p1 = '#page1';
+    var p2 = '#page2';
+    addToHistoryBtn1.addEventListener('click', addPage(p1));
+    addToHistoryBtn2.addEventListener('click', addPage(p2));
+
+
+    // Initial setup
+    updateNavigation();
+    </script>
+</body>
+</html>
