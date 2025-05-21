@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Объекты Browser Object Model (BOM)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .layout-row {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .layout-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #navigation {
+      margin-bottom: 20px;
+    }
+
+    #navigation button {
+      margin-right: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .layout-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Browser Control and Adaptivity</h1>
+
+    <!-- Полный экранs -->
+    <div id="fullscreen-controls">
+      <button id="fullscreen-btn">Во весь экран</button>
+      <button id="exit-fullscreen-btn">Выход из полноэкранного режима</button>
+    </div>
+
+    <div id="browser-info">
+      <h2>Информация о браузере</h2>
+      <p id="browser-name">Браузер: </p>
+      <p id="browser-version">Версия: </p>
+      <p id="device-type">Устройство: </p>
+    </div>
+
+    <div id="navigation">
+      <h2>Навигация</h2>
+      <button id="back-btn" disabled>Назад</button>
+      <p id="current-url">Текущее URL: </p>
+      <ul>
+        <li><a href="#section1">Section 1</a></li>
+        <li><a href="#section2">Section 2</a></li>
+        <li><a href="#section3">Section 3</a></li>
+      </ul>
+    </nav>
+  
+    <section id="section1">
+      <h2>Секция 1</h2>
+      <p>Контент секции 1.</p>
+    </section><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  
+    <section id="section2">
+      <h2>Секция 2</h2>
+      <p>Контент секции 2.</p>
+    </section><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  
+    <section id="section3">
+      <h2>Секция 3</h2>
+      <p>Контент секции 3.</p>
+    </section>
+    </div>
+
+    <div id="adaptive-layout" class="layout-row">
+      <div style="flex: 1; padding: 10px; background-color: #f0f0f0;">
+        <p>Это левая панель.</p>
+      </div>
+      <div style="flex: 2; padding: 10px; background-color: #e0e0e0;">
+        <p>Это правая панель.  Она уйдёт под левую панель на маленьких экранах.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ** Полный экран **
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+
+    fullscreenBtn.addEventListener('click', () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+        document.documentElement.msRequestFullscreen();
+      }
+    });
+
+    exitFullscreenBtn.addEventListener('click', () => {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) { /* Firefox */
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { /* IE/Edge */
+        document.msExitFullscreen();
+      }
+    });
+
+    // ** Детектор браузера **
+    const browserNameEl = document.getElementById('browser-name');
+    const browserVersionEl = document.getElementById('browser-version');
+    const deviceTypeEl = document.getElementById('device-type');
+
+    function detectBrowser() {
+      let browserName = "Unknown Browser";
+      let browserVersion = "Unknown Version";
+
+      if (navigator.userAgent.indexOf("Opera") != -1 || navigator.userAgent.indexOf('OPR') != -1) {
+        browserName = "Opera";
+      } else if (navigator.userAgent.indexOf("Edg") != -1) {
+        browserName = "Edge";
+      } else if (navigator.userAgent.indexOf("Chrome") != -1) {
+        browserName = "Chrome";
+      } else if (navigator.userAgent.indexOf("Safari") != -1) {
+        browserName = "Safari";
+      } else if (navigator.userAgent.indexOf("Firefox") != -1) {
+        browserName = "Firefox";
+      } else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true)) { //If IE > 10
+        browserName = "Internet Explorer";
+      }
+
+      // Версия
+      browserVersion = navigator.appVersion;
+
+      browserNameEl.textContent = `Browser: ${browserName}`;
+      browserVersionEl.textContent = `Version: ${browserVersion}`;
+
+      // Вид устройства
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      deviceTypeEl.textContent = `Устройство: ${isMobile ? "Mobile" : "Desktop"}`;
+
+        if (browserName === "Internet Explorer") {
+            alert("Вы используете устаревший браузер.  Пожалуйста, обновите его для улучшения работы.");
+        }
+    }
+
+    detectBrowser();
+
+    // ** Навигация **
+    const backBtn = document.getElementById('back-btn');
+    const currentUrlEl = document.getElementById('current-url');
+    const navigationHistory = [];
+    let currentUrl = window.location.href;
+
+    function updateNavigation() {
+      currentUrl = window.location.href;
+      currentUrlEl.textContent = `Текущее URL: ${currentUrl}`;
+      backBtn.disabled = navigationHistory.length === 0;//Отключаем кнопку "Назад", если история пуста
+    }
+
+    function navigateBack() {
+      if (navigationHistory.length > 0) {
+        const previousUrl = navigationHistory.pop();
+        window.location.href = previousUrl;
+        updateNavigation();
+      }
+    }
+
+    window.addEventListener('popstate', function(event) {  // Для кнопок назад\вперед
+       updateNavigation();
+    });
+
+    const links = document.querySelectorAll('a');  // Если есть ссылки
+    links.forEach(link => {
+      link.addEventListener('click', function(event) {
+        event.preventDefault();
+        const newUrl = this.href;
+
+        navigationHistory.push(currentUrl);
+        console.log('История: ' + navigationHistory);
+        window.history.pushState({path:newUrl}, '', newUrl);  // Добавление в историю браузера
+        updateNavigation();
+        window.location.href = newUrl;
+
+      });
+    });
+
+
+
+    backBtn.addEventListener('click', navigateBack);
+    updateNavigation();
+
+
+
+    // ** Адаптивный интерфейс **
+    const adaptiveLayout = document.getElementById('adaptive-layout');
+
+    function updateLayout() {
+      if (window.innerWidth <= 768) {
+        adaptiveLayout.classList.remove('layout-row');
+        adaptiveLayout.classList.add('layout-column');
+      } else {
+        adaptiveLayout.classList.remove('layout-column');
+        adaptiveLayout.classList.add('layout-row');
+      }
+    }
+
+    window.addEventListener('resize', updateLayout);
+    updateLayout();
+
+    window.addEventListener('orientationchange', function() {
+      alert("Ориентация устройства изменилась!");
+    });
+  </script>
+
+</body>
+</html>
