@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Свойства и методы модели DOM</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 50px 100px;
+    }
+
+    /* Стили для светлой темы (по умолчанию) */
+    body {
+      background-color: #fff;
+      color: #000;
+    }
+
+    /* Стили для темной темы */
+    body.dark-theme {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .editable-list li {
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .editable-list li.editing {
+      background-color: #eee;
+    }
+
+    .invalid {
+      border: 2px solid red !important;
+    }
+
+    .gallery {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .gallery-main-image {
+        max-width: 500px;
+        max-height: 400px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .gallery-thumbnails {
+        display: flex;
+        gap: 10px;
+    }
+
+    .gallery-thumbnails img {
+        width: 80px;
+        height: 60px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+    }
+
+    .gallery-thumbnails img:hover {
+        border-color: blue;
+    }
+  </style>
+</head>
+<body>
+    <h1>Пр.10 Свойства и методы модели DOM</h1>
+
+  <h2>Редактируемый список</h2>
+  <ul id="editableList" class="editable-list">
+    <li>Элемент 1</li>
+    <li>Элемент 2</li>
+    <li>Элемент 3</li>
+  </ul>
+  <button id="addItemButton">Добавить элемент</button>
+  <button id="removeItemButton">Удалить элемент</button>
+
+  <h2>Переключатель тем</h2>
+  <button id="themeButton">Сменить тему</button>
+
+  <h2>Валидация формы</h2>
+  <form id="myForm">
+    <label for="name">Имя:</label>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="age">Возраст:</label>
+    <input type="number" id="age" name="age" min="0"><br><br>
+  </form>
+
+  <h2>Галерея изображений</h2>
+    <div class="gallery">
+        <img id="mainImage" class="gallery-main-image" src="https://boringapi.com/api/v1/static/photos/13.jpeg" alt="Основное изображение">
+        <div class="gallery-thumbnails">
+            <img src="" alt="Миниатюра 1" data-full-image="https://boringapi.com/api/v1/static/photos/1.jpeg">
+            <img src="" alt="Миниатюра 2" data-full-image="https://boringapi.com/api/v1/static/photos/3.jpeg">
+            <img src="" alt="Миниатюра 3" data-full-image="https://boringapi.com/api/v1/static/photos/4.jpeg">
+        </div>
+    </div>
+
+
+  <script>
+    // Редактируемый список
+    const editableList = document.getElementById('editableList');
+    const addItemButton = document.getElementById('addItemButton');
+    const removeItemButton = document.getElementById('removeItemButton');
+
+    editableList.addEventListener('dblclick', (event) => {
+      const li = event.target;
+      if (li.tagName === 'LI') {
+        li.classList.add('editing');
+        const originalText = li.textContent;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = originalText;
+
+        li.textContent = ''; // Clear the li
+        li.appendChild(input);
+        input.focus();
+
+        input.addEventListener('blur', () => { // Инпут теряет фокус, li - значение инпута
+          li.classList.remove('editing');
+          li.textContent = input.value;
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                input.blur(); // При нажатии ентер блюр у инпута
+            }
+        });
+      }
+    });
+
+    addItemButton.addEventListener('click', () => {
+      const li = document.createElement('li');
+      li.textContent = 'Новый элемент';
+      editableList.appendChild(li);
+    });
+
+    removeItemButton.addEventListener('click', () => {
+      const lastLi = editableList.lastElementChild;
+      if (lastLi) {
+        editableList.removeChild(lastLi);
+      }
+    });
+
+    // Переключатель тем
+    const themeButton = document.getElementById('themeButton');
+    themeButton.addEventListener('click', () => {
+      document.body.classList.toggle('dark-theme');
+    });
+
+    // Валидация формы
+    const form = document.getElementById('myForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const ageInput = document.getElementById('age');
+
+    function validateField(input) {
+      if (!input.checkValidity()) {
+        input.classList.add('invalid');
+      } else {
+        input.classList.remove('invalid');
+      }
+    }
+
+    nameInput.addEventListener('input', () => validateField(nameInput));
+    emailInput.addEventListener('input', () => validateField(emailInput));
+    ageInput.addEventListener('input', () => validateField(ageInput));
+
+    // Галерея изображений
+    const mainImage = document.getElementById('mainImage');
+    const thumbnails = document.querySelectorAll('.gallery-thumbnails img');
+
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', () => {
+        const fullImageSrc = thumbnail.getAttribute('data-full-image');
+        mainImage.setAttribute('src', fullImageSrc);
+      });
+    });
+  </script>
+
+</body>
+</html>
