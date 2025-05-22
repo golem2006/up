@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обработчики событий по умолчанию и их запрет</title>
+    <style>
+        .form-container {
+          margin: 20px;
+          padding: 20px;
+          border: 1px solid #ccc;
+        }
+    
+        .form-field {
+          margin-bottom: 10px;
+        }
+    
+        .error-message {
+          color: red;
+          font-size: 0.8em;
+        }
+    
+        .drag-and-drop-zone {
+          width: 200px;
+          height: 100px;
+          border: 2px dashed #ccc;
+          text-align: center;
+          padding: 20px;
+          margin-bottom: 10px;
+        }
+    
+        .drag-and-drop-zone.dragover {
+          border-color: blue;
+        }
+      </style>
+</head>
+<body>
+    <h1>Пр.4 Обработчики событий по умолчанию и их запрет</h1>
+    <body>
+    
+      <div class="form-container">
+        <h2>Кастомная Форма</h2>
+        <form id="myForm">
+          <div class="form-field">
+            <label for="name">Имя:</label>
+            <input type="text" id="name" name="name" required>
+            <div class="error-message" id="nameError"></div>
+          </div>
+    
+          <div class="form-field">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <div class="error-message" id="emailError"></div>
+          </div>
+    
+          <div class="form-field">
+            <label for="phone">Телефон:</label>
+            <input type="text" id="phone" name="phone">
+            <div class="error-message" id="phoneError"></div>
+          </div>
+    
+    
+          <div class="form-field">
+              <label for="noDigits">Текст (без цифр):</label>
+              <input type="text" id="noDigits" name="noDigits">
+          </div>
+    
+    
+    
+          <button type="submit">Отправить</button>
+        </form>
+      </div>
+    
+      <div class="drag-and-drop-zone" id="dragDropZone">
+        <p>Перетаскивайте файлы сюда</p>
+        <div id="fileList"></div>
+      </div>
+    
+      <script>
+        // ** Кастомный код валидации **
+        const myForm = document.getElementById('myForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const phoneError = document.getElementById('phoneError');
+        const noDigitsInput = document.getElementById('noDigits');
+    
+    
+        myForm.addEventListener('submit', function(event) {
+          event.preventDefault(); // Запрещаем стандартную отправку формы
+    
+          let isValid = true;
+    
+          // Валидация поля "Name"
+          if (nameInput.value.trim() === "") {
+            nameError.textContent = "Имя обязательно.";
+            isValid = false;
+          } else {
+            nameError.textContent = "";
+          }
+    
+          // Валидация поля "Email"
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(emailInput.value)) {
+            emailError.textContent = "Не правильная почта.";
+            isValid = false;
+          } else {
+            emailError.textContent = "";
+          }
+    
+          // Валидация поля "Phone" (простая проверка)
+          // Пример: Только цифры и +
+           const phoneRegex = /^[0-9+]+$/;
+            if (phoneInput.value.trim() !== "" && !phoneRegex.test(phoneInput.value)) {
+                phoneError.textContent = "Не правильный номер. Только цифры и '+' разрешены.";
+                isValid = false;
+            } else {
+                phoneError.textContent = "";
+            }
+    
+          if (isValid) {
+            // Программная отправка формы (имитация)
+            alert("Форма успешно отправлена!");
+            // Здесь можно отправить данные на сервер (например, через fetch)
+            // const formData = new FormData(myForm);
+            // fetch('/your-endpoint', {
+            //   method: 'POST',
+            //   body: formData,
+            // });
+          }
+        });
+    
+        // ** Drag and Drop **
+        const dragDropZone = document.getElementById('dragDropZone');
+        const fileList = document.getElementById('fileList');
+    
+        dragDropZone.addEventListener('dragover', function(event) {
+          event.preventDefault(); // Запрещаем стандартное поведение (открытие файла в браузере)
+          dragDropZone.classList.add('dragover');
+        });
+    
+        dragDropZone.addEventListener('dragleave', function() {
+          dragDropZone.classList.remove('dragover');
+        });
+    
+        dragDropZone.addEventListener('drop', function(event) {
+          event.preventDefault();
+          dragDropZone.classList.remove('dragover');
+    
+          const files = event.dataTransfer.files;
+          displayFiles(files);
+          processFiles(files); // Обработка файлов
+        });
+    
+        function displayFiles(files) {
+          fileList.innerHTML = '';
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const listItem = document.createElement('p');
+            let fSize = file.size;
+            if (fSize > 1048576) {
+                fSize = (fSize / (1024 * 1024)).toFixed(2);
+                fSize = fSize + " mb"
+            }
+            else if (fSize > 1024) {
+                fSize = (fSize/ 1024).toFixed(2);
+                fSize = fSize + " kb"
+            } else {
+                fSize = fSize + " bytes"
+            }
+            listItem.textContent = `Файл: ${file.name}, Размер: ${fSize}`;
+            fileList.appendChild(listItem);
+          }
+        }
+    
+        function processFiles(files) {
+          // Здесь можно добавить логику обработки файлов (например, загрузка на сервер)
+          console.log("Processing files:", files);
+        }
+    
+        // ** Текстовое поле без цифр и с форматированием **
+        noDigitsInput.addEventListener('input', function(event) {
+            let inputValue = event.target.value;
+    
+            // Запрещаем ввод цифр
+            const noDigitsValue = inputValue.replace(/[0-9]/g, '');
+            event.target.value = noDigitsValue;
+    
+            // Форматирование (делаем первую букву заглавной)
+            if (noDigitsValue.length > 0) {
+                event.target.value = noDigitsValue.charAt(0).toUpperCase() + noDigitsValue.slice(1);
+            }
+        });
+    
+        // ** Кастомное поведение для клавиши Tab **
+        myForm.addEventListener('keydown', function(event) {
+          if (event.key === 'Tab') {
+            event.preventDefault(); // Предотвращаем стандартное переключение фокуса
+            //  Здесь можно реализовать кастомное поведение Tab
+            console.log('Кнопка Tab нажата!');
+            //  Например, можно перейти к другому элементу формы
+            const currentElement = document.activeElement;
+            //  Здесь нужно определить следующий элемент (например, на основе порядка элементов)
+            //  и установить на него фокус:
+            //  if (currentElement === nameInput) {
+            //      emailInput.focus();
+            //  } else if ...
+          }
+        });
+    
+        // ** Кастомное поведение для Ctrl+S **
+        document.addEventListener('keydown', function(event) {
+          if (event.ctrlKey && event.key === 's') {
+            event.preventDefault(); // Запрещаем стандартное сохранение
+            console.log('Ctrl+S pressed!');
+            // Здесь можно реализовать кастомное сохранение (например, сохранение данных формы)
+            alert("Data saved (simulated)!");
+          }
+        });
+      </script>
+    </body>
+    </html>
