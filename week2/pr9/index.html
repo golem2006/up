@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объекты модели DOM. Иерархия</title>
+    <style>
+        body {
+            padding: 30px 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.9 Объекты модели DOM. Иерархия</h1>
+    <nav class="menu">
+        Меню
+        <div title="Мне добавился класс .active через js">
+            <a href="#">Пункт 1</a>
+            <div style="margin-left: 15px;"><a href="#">Подменю</a></div>
+        </div>
+        <div><a href="#">Пункт 2</a></div>
+        <div><a href="#">Пункт 3</a></div>
+        
+    </nav>
+    <hr>
+    <div id="tree">
+  <div>
+    <p>Текст 1</p>
+    <div>
+      <span id="spanEl">Текст 2</span>
+    </div>
+  </div>
+  <ul>
+    <li>Элемент 1</li>
+    <li>Элемент 2</li>
+  </ul>
+</div>
+<hr>
+
+    <ul id="myList">
+        <li>Вишня</li>
+        <li>Яблоко</li>
+        <li>Банан</li>
+        <li>Апельсин</li>
+        <li>Груша</li>
+    </ul>
+
+  <button id="sortButton">Сортировать</button>
+
+  <hr>
+  <p>Визуализация иерархии DOM для #spanEl (Текст2):</p>
+  <div id="output"></div>
+
+<script>
+    const menu = document.querySelector('.menu');
+
+    var elArr = [];
+
+
+    function addClass(parent) {
+        var childs = Array.from(parent.children); // Преобразование в массив
+        childs.forEach(element => { // Для каждого
+            if (element.querySelector('div')) { // Если элемент содержит див
+                element.classList.add('active'); // Добавление класса
+            }
+        });
+    }
+    addClass(menu);
+
+
+  function traverseDOM(element, level = 0) {
+    console.log(' '.repeat(level * 2) + element.tagName);
+    elArr.push(element.tagName);
+    
+    if (element.tagName == "HTML") {
+        return;
+    }
+    traverseDOM(element.parentNode, level + 1);
+  }
+
+  // Начинаем обход с корневого элемента
+  console.log('Путь от элемента #spanEl до корня элемента:')
+  traverseDOM(document.getElementById('spanEl'));
+  console.log(elArr);
+
+   function sortList() {
+      const list = document.getElementById('myList');
+      const items = list.getElementsByTagName('li');
+
+      // Преобразуем HTMLCollection в массив для удобства сортировки.
+      const itemsArray = Array.from(items);
+
+      // Сортируем массив элементов списка по тексту.
+      itemsArray.sort((a, b) => {
+        const textA = a.textContent.toUpperCase(); // Игнорируем регистр
+        const textB = b.textContent.toUpperCase();
+        return textA.localeCompare(textB);  // Сравниваем строки с учетом локали
+      });
+
+      // Удаляем все элементы из списка.
+      while (list.firstChild) {
+        list.removeChild(list.firstChild);
+      }
+
+      // Добавляем отсортированные элементы обратно в список.
+      itemsArray.forEach(item => {
+        list.appendChild(item);
+      });
+    }
+
+    // Визуализация DOM
+    const sortButton = document.getElementById('sortButton');
+    sortButton.addEventListener('click', sortList);
+
+    const out = document.getElementById('output');
+    const ul = document.createElement('ul');
+    for (var i = 0; i < elArr.length; i++) { // Создание li для каждого элемента списка
+            var el = elArr[elArr.length - 1 - i];
+            const ulNextlvl = document.createElement('ul');
+            const open = '<ul>'.repeat(i);
+            const close = '</ul>'.repeat(i);
+            const li = document.createElement('li');
+            // li.innerHTML = open;
+            // li.textContent = el;
+            li.innerHTML = open + el + close;
+            ul.appendChild(li);
+    }
+    out.appendChild(ul); // Вывод
+
+</script>
+</body>
+</html>
