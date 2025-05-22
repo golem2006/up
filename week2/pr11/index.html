@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Модель событий DOM</title>
+  <style>
+    /* Галерея */
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .gallery img {
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+
+    /* Модальное окно */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 80%;
+      max-height: 80%;
+    }
+
+    .modal-buttons {
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .modal-buttons button {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Drag and Drop */
+    .drag-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .draggable {
+      width: 100px;
+      height: 100px;
+      background-color: #ddd;
+      border: 1px solid #aaa;
+      text-align: center;
+      line-height: 100px;
+      cursor: grab;
+    }
+
+    .dropzone {
+      width: 200px;
+      height: 200px;
+      border: 2px dashed #bbb;
+      text-align: center;
+      line-height: 200px;
+    }
+
+    .dropzone.hovering {
+      background-color: #eee;
+    }
+
+    /* Кастомное контекстное меню */
+    .context-menu {
+        position: fixed;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 5px 0;
+        display: none; /* Hidden by default */
+        z-index: 2; /* Sit on top of modal */
+    }
+
+    .context-menu ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .context-menu li {
+        padding: 8px 15px;
+        cursor: pointer;
+    }
+
+    .context-menu li:hover {
+        background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+
+    <h1>Модель событий DOM</h1>
+  <h2>Интерактивная галерея</h2>
+  <div class="gallery">
+    <img src="https://boringapi.com/api/v1/static/photos/1.jpeg" alt="Image 1" data-index="0">
+    <img src="https://boringapi.com/api/v1/static/photos/3.jpeg" alt="Image 2" data-index="1">
+    <img src="https://boringapi.com/api/v1/static/photos/4.jpeg" alt="Image 3" data-index="2">
+    <img src="https://boringapi.com/api/v1/static/photos/5.jpeg" alt="Image 4" data-index="3">
+  </div>
+
+  <div id="myModal" class="modal">
+    
+    <div class="modal-buttons">
+        <span class="close">&times;</span>
+        <button id="prevButton">Назад</button>
+        <button id="nextButton">Вперед</button>
+    </div>
+    <img class="modal-content" id="img01">
+  </div>
+
+  <h2>Drag and Drop</h2>
+  <div class="drag-container">
+    <div class="draggable" draggable="true">Drag Me!</div>
+    <div class="dropzone">Drop Here</div>
+  </div>
+
+  <h2>Кастомное контекстное меню</h2>
+  <div id="contextTarget">Right-Click Me</div>
+
+  <div class="context-menu" id="customContextMenu">
+    <ul>
+      <li data-action="copy">Copy</li>
+      <li data-action="delete">Delete</li>
+    </ul>
+  </div>
+
+  <script>
+    // Интерактивная галерея
+    const images = document.querySelectorAll('.gallery img');
+    const modal = document.getElementById('myModal');
+    const modalImg = document.getElementById('img01');
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+    const closeButton = document.querySelector('.close');
+    let currentIndex = 0;
+
+    images.forEach((img, index) => { // Для каждой фотографии евентлистенер
+      img.addEventListener('click', () => {
+        currentIndex = index;
+        modal.style.display = "block";
+        modalImg.src = img.src;
+      });
+    });
+
+    closeButton.addEventListener('click', () => {
+      modal.style.display = "none";
+    });
+
+    prevButton.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length; // Уменьшение индекса на 1
+        modalImg.src = images[currentIndex].src; // Выбор нужной фотографии из массива
+    });
+
+    nextButton.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        modalImg.src = images[currentIndex].src;
+    });
+
+    // Drag and Drop
+    const draggable = document.querySelector('.draggable');
+    const dropzone = document.querySelector('.dropzone');
+
+    draggable.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', draggable.textContent); // данные (текст) сохраняются в e.dataTransfer
+    });
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault(); // Allow drop
+      dropzone.classList.add('hovering');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('hovering');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('hovering');
+      const data = e.dataTransfer.getData('text/plain'); // Получает данные из e.dataTransfer
+      dropzone.textContent = data;
+    });
+
+    // Кастомное контекстное меню
+    const contextTarget = document.getElementById('contextTarget');
+    const customContextMenu = document.getElementById('customContextMenu');
+
+    contextTarget.addEventListener('contextmenu', (e) => {
+      e.preventDefault(); // Отмена действия по умолчанию 
+      customContextMenu.style.display = 'block'; // Показ контекстного меню
+      customContextMenu.style.left = e.clientX + 'px'; // Позиция контекстного меню - позиция курсора
+      customContextMenu.style.top = e.clientY + 'px';
+    });
+
+    customContextMenu.addEventListener('click', (e) => { // Обработка клика по контекстному меню
+      const action = e.target.dataset.action; // Получение действия
+      if (action === 'copy') { // Если действие - копировать
+        alert('Copy Action');
+      } else if (action === 'delete') { // Если действие - удалить
+        alert('Delete Action');
+      }
+      customContextMenu.style.display = 'none'; // Спрятать после клика
+    });
+
+    document.addEventListener('click', (e) => { // Обработка клика по странице
+      if (!customContextMenu.contains(e.target) && e.target !== contextTarget) { // Если элемент клика не потомок меню и не не сам элемент
+        customContextMenu.style.display = 'none'; // Спрятать
+      }
+    });
+  </script>
+
+</body>
+</html>
