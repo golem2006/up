@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Иерархическая структура</title>
+<style>
+    body {
+        padding: 50px 100px;
+    }
+  .tree ul {
+    list-style-type: none;
+    padding-left: 20px;
+  }
+
+  .tree li {
+    margin-bottom: 5px;
+  }
+
+  .tree .node {
+    cursor: pointer;
+  }
+
+  .tree .collapsed > ul {
+    display: none;
+  }
+  .collapsed span {
+    color: rgb(100, 100, 100);
+  }
+
+  .tree .add-button, .tree .remove-button {
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  .container {
+      padding: 20px;
+    }
+
+    #block-list {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 50px;
+    }
+
+    .block {
+      border: 1px solid #999;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      cursor: grab;
+    }
+
+    .block:active {
+      cursor: grabbing;
+    }
+
+    .block .delete-btn {
+      float: right;
+      cursor: pointer;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+    }
+
+    .block .drag-handle {
+      cursor: grab; /* Change cursor for drag handle */
+      margin-right: 10px; /* Add some spacing */
+    }
+    .block .block-content {
+        margin-left: 20px; /* Indent the content so the handle isn't obstructed */
+    }
+</style>
+</head>
+<body>
+
+  <h1>Иерархическая структура</h1>
+
+  <div id="treeContainer" class="tree">
+    <ul>
+      <li>
+        <span class="node">Root Node</span>
+        <span class="add-button">+</span>
+        <span class="remove-button">-</span>
+        <ul>
+          <li>
+            <span class="node">Child Node 1</span>
+            <span class="add-button">+</span>
+            <span class="remove-button">-</span>
+          </li>
+          <li>
+            <span class="node">Child Node 2</span>
+            <span class="add-button">+</span>
+            <span class="remove-button">-</span>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <ul id="myList">
+        <li>Вишня</li>
+        <li>Яблоко</li>
+        <li>Банан</li>
+        <li>Апельсин</li>
+        <li>Груша</li>
+        <li>Д</li>
+        <li>Е</li>
+        <li>Ё</li>
+        <li>Ж</li>
+        <li>З</li>
+    </ul>
+
+  <button id="sortButton">Сортировать по алфавиту</button>
+  <button id="sortRevertButton">Обратная сортировка</button>
+  <button id="sortRandomButton">Перемешать</button>
+
+  <div class="container">
+    <h1>Конструктор блоков</h1>
+
+    <div id="block-controls">
+      <button data-block-type="text">Добавить текстовый блок</button>
+      <button data-block-type="image">Добавить блок изображение</button>
+    </div>
+
+    <div id="block-list">
+      <!-- Блоки будут добавляться сюда -->
+    </div>
+  </div>
+
+  <script>
+    // Дерево каталогов
+    const treeContainer = document.getElementById('treeContainer');
+
+    // Функция для добавления нового узла
+    function addNode(parentNode) {
+      const newNodeText = prompt('Введите текст для нового узла:');
+      if (newNodeText) {
+        const ul = parentNode.querySelector('ul');
+        if (!ul) {
+          const newUl = document.createElement('ul');
+          parentNode.appendChild(newUl);
+        }
+
+        const li = document.createElement('li');
+        const nodeSpan = document.createElement('span');
+        nodeSpan.className = 'node';
+        nodeSpan.textContent = newNodeText;
+
+        const addButton = document.createElement('span');
+        addButton.className = 'add-button';
+        addButton.textContent = '+';
+
+        const removeButton = document.createElement('span');
+        removeButton.className = 'remove-button';
+        removeButton.textContent = '-';
+
+        li.appendChild(nodeSpan);
+        li.appendChild(addButton);
+        li.appendChild(removeButton);
+        parentNode.querySelector('ul').appendChild(li);
+
+        // Назначаем обработчики для новых кнопок
+        addButton.addEventListener('click', (event) => {
+          addNode(li);
+          event.stopPropagation(); // Предотвратить сворачивание/разворачивание
+        });
+
+        removeButton.addEventListener('click', (event) => {
+          removeNode(li);
+          event.stopPropagation();
+        });
+
+        nodeSpan.addEventListener('click', toggleCollapse); // Для нового узла
+      }
+    }
+
+    // Функция для удаления узла
+    function removeNode(nodeToRemove) {
+      if (confirm('Вы уверены, что хотите удалить этот узел?')) {
+        nodeToRemove.parentNode.removeChild(nodeToRemove);
+      }
+    }
+
+    // Функция для сворачивания/разворачивания ветки
+    function toggleCollapse(event) {
+        if (event.currentTarget.closest('li')) { // Если узел вложенный, используется currentTarget
+            console.log(0);
+            const li = event.currentTarget.parentNode;
+            li.classList.toggle('collapsed');
+            event.stopPropagation();
+        } else {
+            console.log(1);
+            const li = event.target.parentNode;
+            li.classList.toggle('collapsed');
+        }
+    }
+
+    // Назначаем обработчики событий для существующих элементов
+    treeContainer.addEventListener('click', (event) => {
+      const target = event.target;
+
+      if (target.classList.contains('add-button')) {
+        const li = target.parentNode;
+        addNode(li);
+        event.stopPropagation(); // Предотвратить сворачивание/разворачивание
+
+      } else if (target.classList.contains('remove-button')) {
+        const li = target.parentNode;
+        removeNode(li);
+        event.stopPropagation(); // Предотвратить сворачивание/разворачивание
+
+      } else if (target.classList.contains('node')) {
+          toggleCollapse(event);
+      }
+    });
+
+    // Сортировка списка
+    function sortByAlphobet(itemsArray) {
+        itemsArray.sort((a, b) => {
+        const textA = a.textContent.toUpperCase(); // Игнорируем регистр
+        const textB = b.textContent.toUpperCase();
+        return textA.localeCompare(textB);  // Сравниваем строки с учетом локали
+      });
+    }
+
+    function sortRevert(itemsArray) {
+        itemsArray.sort((a, b) => {
+        const textA = a.textContent.toUpperCase(); // Игнорируем регистр
+        const textB = b.textContent.toUpperCase();
+        return textB.localeCompare(textA);  // Сравниваем строки с учетом локали
+      });
+    }
+
+    function sortRandom(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1)); // Случайный индекс от 0 до i
+            [array[i], array[j]] = [array[j], array[i]]; // Обмен элементов
+        }
+        return array; 
+    }
+
+    function sortList(func) {
+        return function() { // Возвращаем функцию-обработчик
+            const list = document.getElementById('myList');
+            const items = list.getElementsByTagName('li');
+
+            // Преобразуем HTMLCollection в массив для удобства сортировки.
+            const itemsArray = Array.from(items);
+
+            // Сортируем массив элементов списка по тексту.
+            func(itemsArray);
+
+            // Удаляем все элементы из списка.
+            while (list.firstChild) {
+                list.removeChild(list.firstChild);
+            }
+
+            // Добавляем отсортированные элементы обратно в список.
+            itemsArray.forEach(item => {
+                list.appendChild(item);
+            });
+        }
+    }
+
+    const sortButton = document.getElementById('sortButton');
+    const sortRevertButton = document.getElementById('sortRevertButton');
+    const sortRandomButton = document.getElementById('sortRandomButton');
+    sortButton.addEventListener('click', sortList(sortByAlphobet));
+    sortRevertButton.addEventListener('click', sortList(sortRevert));
+    sortRandomButton.addEventListener('click', sortList(sortRandom));
+
+    // Конструктор блоков
+    const blockControls = document.getElementById('block-controls');
+    const blockList = document.getElementById('block-list');
+
+    // Создание нового блока
+    function createBlock(type) {
+      const block = document.createElement('div');
+      block.classList.add('block');
+      block.draggable = true;  // Вкл. drag & drop
+
+      const dragHandle = document.createElement('span');
+      dragHandle.classList.add('drag-handle');
+      dragHandle.textContent = '☰'; // Иконка гамбургера для ручки перетаскивания
+      block.appendChild(dragHandle);
+
+      const blockContent = document.createElement('div');
+      blockContent.classList.add('block-content');
+
+      let content;
+      switch (type) {
+        case 'text':
+          content = document.createElement('textarea');
+          content.placeholder = "Enter your text here";
+          break;
+        case 'image':
+          content = document.createElement('input');
+          content.type = "url";
+          content.placeholder = "Enter image URL";
+          break;
+        default:
+          content = document.createTextNode('Unknown Block Type');
+      }
+      blockContent.appendChild(content);
+      block.appendChild(blockContent);
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.addEventListener('click', () => {
+        block.remove();
+      });
+      block.appendChild(deleteBtn);
+
+      return block;
+    }
+
+    // Событие для кнопок
+    blockControls.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        const blockType = e.target.dataset.blockType;
+        const newBlock = createBlock(blockType);
+        blockList.appendChild(newBlock);
+      }
+    });
+
+    // ** Drag & Drop **
+    let draggedBlock = null;
+
+    blockList.addEventListener('dragstart', (e) => {
+      draggedBlock = e.target;
+      e.dataTransfer.setData('text/plain', null); // Для Firefox
+    });
+
+    blockList.addEventListener('dragover', (e) => {
+      if (e.target.classList.contains('block')) {
+        e.preventDefault(); // Разрешить drop
+      }
+    });
+
+    blockList.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (e.target.classList.contains('block') && e.target !== draggedBlock) {
+        if (isBefore(draggedBlock, e.target)) {
+          blockList.insertBefore(draggedBlock, e.target);
+        } else {
+          blockList.insertBefore(draggedBlock, e.target.nextSibling);
+        }
+      }
+    });
+
+    function isBefore(el1, el2) {
+      if (el2.parentNode === el1.parentNode) {
+        for (let cur = el1.previousSibling; cur && cur !== el2; cur = cur.previousSibling);
+        return true;
+        
+      }
+      console.log(0);
+      return false;
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Знакомство с объектами Document и Link</title>
+    <style>
+        body {
+            padding: 30px 100px;
+        }
+        .link  a {
+            width: fit-content;
+            padding: 5px 10px;
+        }
+        .link span {
+            font-size: large;
+            cursor: pointer;
+        }
+        .link span:hover {
+            transition: opacity 0.3s ease;
+            opacity: 0.6;
+        }
+        #linkText {
+            display: block;
+            margin: 20px 0;
+        }
+        #warn {
+            display: block;
+            position: absolute;
+            font-size: smaller;
+            color: brown;
+        }
+        h2 {
+            margin-top: 500px;
+        }
+        #h2_1 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.13 Знакомство с объектами Document и Link</h1>
+    <div id="toc">
+        <h2 id="h2_1">Оглавление</h2>
+        <ul id="toc-list">
+          <!-- Элементы оглавления будут тут -->
+        </ul>
+      </div>
+  
+    <div class="container">
+        <h2 id="h2_2">Менеджер ссылок</h2>
+        <input type="text" id="addLinkInput" placeholder="URL">
+        <span id="warn"></span>
+        <button id="addLinkButton">Добавить ссылку</button>
+        <input type="text" id="linkText" placeholder="Название">
+        <p>Внешние ссылки подсввечиваются</p>
+        <div id="links"></div>
+    </div>
+    <h2 id="h2_3">Анализатор страницы</h2>
+    <button id="analysB">Анализировать</button>
+    <pre id="analys"></pre>
+    <script src="linkManager.js"></script>
+    <script>
+        const analys = document.getElementById('analys');
+        const analysB = document.getElementById('analysB');
+
+        analysB.addEventListener('click', ()=>{
+            analys.textContent = `
+            Количество ссылок на странице: ${document.links.length} 
+
+            Количество изображений: ${document.querySelectorAll('img').length}
+
+            Заголовок страницы: ${document.title}
+
+            Размеры body:
+
+                            Ширина - ${document.body.offsetWidth}
+
+                            Высота - ${document.body.offsetHeight}
+            `
+        })
+
+        const tocList = document.getElementById('toc-list');
+        const headings = document.querySelectorAll('h2, h3');
+
+        // Function to generate a unique ID for a heading
+        function generateId(headingText) {
+          return headingText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+
+        // Function to create a table of contents item
+        function createTocItem(heading) {
+          const listItem = document.createElement('li');
+          const link = document.createElement('a');
+
+          let id = heading.id;
+          if (!id) {
+            id = generateId(heading.textContent);
+            heading.id = id;
+          }
+
+          link.href = `#${id}`;
+          link.textContent = heading.textContent;
+          listItem.appendChild(link);
+
+          return listItem;
+        }
+
+        // Generate table of contents
+        headings.forEach(heading => {
+          const tocItem = createTocItem(heading);
+          tocList.appendChild(tocItem);
+        });
+    </script>
+</body>
+</html>

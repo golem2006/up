@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объект RegExp. Правила записи регулярных выражений</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        form input {
+            display: block;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Important for width: 100% */
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3e8e41;
+        }
+        #results {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1>Пр.18 Объект RegExp. Правила записи регулярных выражений</h1>
+
+        <h2>Валидатор форм</h2>
+
+        <form name="form" id="form">
+            <input type="email" id="emailInput" name="emailInput" placeholder="Email">
+            <input type="tel" id="telInput" name="telInput" placeholder="Phone number">
+            <input type="url" id="urlInput" name="urlInput" placeholder="URL">
+            <input type="text" id="ipInput" name="ipInput" placeholder="IPv4">
+            <input type="submit">
+        </form>
+    
+        <h2>Генератор регулярных выражений</h2>
+
+        <label for="regexInput">Regular Expression:</label>
+        <input type="text" id="regexInput" placeholder="Enter regular expression">
+
+        <label for="textInput">Test Text:</label>
+        <textarea id="textInput" rows="5" placeholder="Enter text to test"></textarea>
+
+        <label for="flagsInput">Flags (e.g., g, i, m):</label>
+        <input type="text" id="flagsInput" placeholder="Enter flags">
+
+        <button id="testButton">Test Regular Expression</button>
+
+        <div id="results">
+            <h2>Results:</h2>
+            <pre id="matches"></pre>
+        </div>
+    </div>
+    <script>
+        // Валидатор форм
+
+        // Email (с поддержкой Unicode)
+        function isValidEmail(email) {
+          const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEFa-zA-Z0-9-)+\.)+[a-zA-Z]{2,}$/u;
+          return emailRegex.test(email);
+        }
+
+        // Номер телефона (международный формат)
+        function isValidPhoneNumber(phoneNumber) {
+          const phoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/; //Пример: +1 555 123 4567
+          return phoneRegex.test(phoneNumber);
+        }
+
+        // URL (с протоколом http/https)
+        function isValidURL(url) {
+          const urlRegex = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/.*)?$/i;
+          return urlRegex.test(url);
+        }
+
+        // IP-адрес (IPv4)
+        function isValidIPv4(ip) {
+          const ipv4Regex = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+          return ipv4Regex.test(ip);
+        }
+
+        const elems = document.forms['form'].elements;
+        document.forms['form'].addEventListener('submit', (event) => {
+            event.preventDefault();
+             // Получаем значения полей
+            const emailValue = document.getElementById('emailInput').value;
+            const telValue = document.getElementById('telInput').value;
+            const urlValue = document.getElementById('urlInput').value;
+            const ipValue = document.getElementById('ipInput').value;
+
+            // Валидация полей
+            const isEmailValid = isValidEmail(emailValue);
+            const isTelValid = isValidPhoneNumber(telValue);
+            const isUrlValid = isValidURL(urlValue);
+            const isIpValid = isValidIPv4(ipValue);
+
+            // Выводим результаты валидации (можно заменить на отображение ошибок в форме)
+            console.log("Email is valid:", isEmailValid);
+            console.log("Phone number is valid:", isTelValid);
+            console.log("URL is valid:", isUrlValid);
+            console.log("IPv4 is valid:", isIpValid);
+
+            // Если все поля валидны, отправляем форму (или делаем что-то еще)
+            if (isEmailValid && isTelValid && isUrlValid && isIpValid) {
+                alert("Form is valid! Submitting...");
+                // form.submit(); // Раскомментируйте эту строку для отправки формы
+            } else {
+                alert("Form is invalid. Please check the fields.");
+            }
+        })
+
+        console.log("Email:", isValidEmail("test@example.com")); // true
+        console.log("Email:", isValidEmail("invalid-email")); // false
+        console.log("Телефон:", isValidPhoneNumber("+1 555 123 4567")); // true
+        console.log("URL:", isValidURL("https://www.example.com")); // true
+        console.log("IP:", isValidIPv4("192.168.1.1")); // true 
+        // Парсер логов
+
+        const logPatterns = {
+          dateAndTime: /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[-+]\d{2}:\d{2}))/,
+          logLevel: /(ERROR|WARN|INFO|DEBUG|TRACE)/,
+          errorMessage: /Error message: (.+)/i
+        };
+
+        // Функция для извлечения информации из лога
+        function parseLog(logLine) {
+          const result = {};
+        
+          if (logPatterns.dateAndTime.test(logLine)) {
+            result.dateAndTime = logLine.match(logPatterns.dateAndTime)[0];
+          }
+      
+          if (logPatterns.logLevel.test(logLine)) {
+            result.logLevel = logLine.match(logPatterns.logLevel)[0];
+          }
+      
+          if (logPatterns.errorMessage.test(logLine)) {
+            result.errorMessage = logLine.match(logPatterns.errorMessage)[1];
+          }
+      
+          return result;
+        }
+
+        // Пример строки лога
+        const logLine = "2023-10-27T10:00:00.000Z INFO: Everything is fine. Error message: Something went wrong!";
+        const parsedLog = parseLog(logLine);
+        console.log(parsedLog);
+
+        // Текстовый процессор
+
+        // Удаление HTML-тегов из строки
+        function removeHTMLTags(text) {
+          return text.replace(/<[^>]*>/g, '');
+        }
+
+        // Поиск всех хештегов (#пример)
+        function findHashtags(text) {
+          const hashtagRegex = /#[\wа-яё]+/gi;
+          const matches = text.match(hashtagRegex);
+          return matches ? matches : [];
+        }
+
+        // Замена двойных пробелов на одинарные
+        function replaceDoubleSpaces(text) {
+          return text.replace(/\s+/g, ' ');
+        }
+
+        const htmlText = "<p>Это <b>текст</b> с <i>HTML</i> тегами.</p>";
+        const hashtagsText = "Это текст с #хэштегами #пример #test.";
+        const doubleSpacesText = "Это текст  с  двойными  пробелами.";
+
+        console.log("Текст без HTML тегов:", removeHTMLTags(htmlText));
+        // Результат: "Это текст с HTML тегами."
+        console.log("Хештеги:", findHashtags(hashtagsText));
+        // Результат: [ '#хэштегами', '#пример', '#test' ]
+        console.log("Текст без двойных пробелов:", replaceDoubleSpaces(doubleSpacesText));
+        // Результат: "Это текст с двойными пробелами."
+
+        // Генератор регулярных выражений
+        const regexInput = document.getElementById('regexInput');
+        const textInput = document.getElementById('textInput');
+        const flagsInput = document.getElementById('flagsInput');
+        const testButton = document.getElementById('testButton');
+        const matchesElement = document.getElementById('matches');
+
+        testButton.addEventListener('click', function() {
+            const regexValue = regexInput.value;
+            const textValue = textInput.value;
+            const flagsValue = flagsInput.value;
+
+            try {
+                // Create regular expression
+                const regex = new RegExp(regexValue, flagsValue);
+
+                // Test the regular expression
+                const matches = textValue.match(regex);
+
+                // Display the results
+                if (matches) {
+                    matchesElement.textContent = JSON.stringify(matches, null, 2); // Pretty print the array
+                } else {
+                    matchesElement.textContent = "No matches found.";
+                }
+            } catch (error) {
+                matchesElement.textContent = "Error: " + error.message; // Display error messages
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Применение форм. Размещение элементов формы в HTML</title>
+    <style>
+        body {
+            padding: 30px 100px;
+        }
+        form > input {
+            display: block;
+        }
+        input {
+            margin-bottom: 10px;
+        }
+        input:last-child {
+            margin-top: 10px;
+        }
+        #message-error {
+            
+            font-size: 11px;
+            color: brown;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.16 Применение форм. Размещение элементов формы в HTML</h1>
+    <h2>Форма входа в систему</h2>
+    <form id="form1">
+        <input type="text" id="login" placeholder="Логин" required>
+        <input type="password" id="passw" minlength="5" placeholder="Пароль">
+        <div id="message-error"></div>
+        <input type="submit" id="submit1">
+    </form>
+    <h2>Форма оформления заказа</h2>
+    <form>
+        <input type="text" name="" id="" placeholder="ФИО">
+        <input type="text" name="" id="" placeholder="Адрес">
+        <input type="tel" name="" id="" placeholder="Телефон">
+        <input type="email" name="" id="" placeholder="Email">
+        <div>
+            <p>Способ оплаты:</p>
+            <label><input type="checkbox" name="" value="nal"> Наличные</label>
+            <label><input type="checkbox" name="" value="beznal"> Банковской картой</label>
+        </div>
+        <input type="submit">
+    </form>
+    <h2>Анкета пользователя</h2>
+    <form>
+        <div>
+            <label for="file-upload">Выберите фото:</label>
+            <input type="file" id="file-upload" name="file-upload">
+          </div>
+          
+          <div>
+            <label for="education">Образование:</label>
+            <select id="education" name="education">
+              <option value="general">Общее</option>
+              <option value="professional" selected>Профессиональное</option>
+            </select>
+          </div>
+
+          <div>
+            <p>Какими навыками вы владеете?</p>
+            <label><input type="checkbox" name="coding" value="coding"> Программирование</label>
+            <label><input type="checkbox" name="copy-pasting" value="copy-pasting"> Копирование-вставка</label>
+          </div>
+
+          <div>
+            <textarea name="about-me" id="about-me" cols="30" rows="5" placeholder="Расскажите о себе"></textarea>
+          </div>
+          
+          <div>
+            <button type="submit">Загрузить</button>
+            <button type="reset">Очистить</button>
+          </div>
+    </form>
+    <div id="difficult-form">
+        <h2>Многостраничная форма</h2>
+        <div id="difficult-form-content">
+            <input type="text" placeholder="Первый вопрос">
+        </div>
+        <label for="progress">Прогресс: </label>
+        <progress id="progress" max="3" value="0"></progress><br>
+        <button id="next">Следующий шаг</button>
+    </div>
+    <script>
+        // Форма входа в систему
+        var isValid = true;
+        document.getElementById('submit1').addEventListener('click',(event)=>{
+            event.preventDefault();
+            document.getElementById('message-error').textContent = '';
+            const loginField = document.getElementById('login');
+            if (!loginField.checkValidity()) {
+                document.getElementById('message-error').textContent += 'Логин обязателен; ';
+                isValid = false;
+            } else {
+                document.getElementById('message-error').textContent += '';
+            }
+            const passField = document.getElementById('passw');
+            if (!passField.checkValidity()) {
+                document.getElementById('message-error').textContent += 'Пароль должен содержать минимум 5 символов; ';
+                isValid = false;
+            } else {
+                document.getElementById('message-error').textContent += '';
+            }
+            if (isValid == true) {
+                // Обработка формы, отправка на сервер
+                console.log('Форма отправена');
+            }
+        })
+    
+        // Многостраничная форма
+        const formContent = document.getElementById('difficult-form-content');
+        const progress = document.getElementById('progress');
+        const next = document.getElementById('next');
+
+        var res = [];
+
+        next.addEventListener('click', step);
+
+        function step() {
+            const stepNo = progress.value;
+            const oldInput = formContent.querySelector('input')
+            res.push(oldInput.value);
+            formContent.removeChild(oldInput);
+
+            if (stepNo == 0) {
+                const newInput = document.createElement('input');
+                newInput.type = 'text';newInput.placeholder = 'Второй вопрос';
+                formContent.appendChild(newInput);
+            } else if (stepNo == 1) {
+                const newInput = document.createElement('input');
+                newInput.type = 'text';newInput.placeholder = 'Третий вопрос';
+                formContent.appendChild(newInput);
+            } else if (stepNo == 2) {
+                const newP = document.createElement('p');
+                newP.textContent = `Форма отправлена. Ваши данные: ${res}`;
+                formContent.appendChild(newP);
+                document.getElementById('difficult-form').removeChild(document.getElementById('difficult-form').querySelector('button'));
+            }
+            progress.value += 1;
+        }
+    </script>
+</body>
+</html>

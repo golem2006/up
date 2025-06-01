@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Особенности DOM в HTML5</title>
+    <style>
+        body {
+            padding: 50px 150px;
+        }
+        .active {
+            background-color: blueviolet;
+            color: blue;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .gallery figure {
+            width:27vw;
+        }
+        .gallery figure img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.15 Особенности DOM в HTML5</h1>
+    <h2>Создайте адаптивное меню:</h2>
+    <menu>
+        <nav id="nav">
+            <button id="page1-btn">Страница 1</button>
+            <button id="page2-btn">Страница 2</button>
+        </nav>
+    </menu>
+    <div id="SPAcontent"></div>
+    <h2>Разработайте галерею изображений:</h2>
+    <div class="gallery">
+        <figure>
+            <div class="imgWrapper">
+                <img src="https://boringapi.com/api/v1/static/photos/1.jpeg" alt="img 1">
+                <figcaption>Картинка 1</figcaption>
+            </div>
+        </figure>
+        <figure>
+            <div class="imgWrapper">
+                <img src="https://boringapi.com/api/v1/static/photos/2.jpeg" alt="img 2">
+                <figcaption>Картинка 2</figcaption>
+            </div>
+        </figure>
+        <figure>
+            <div class="imgWrapper">
+                <img src="https://boringapi.com/api/v1/static/photos/3.jpeg" alt="img 3">
+                <figcaption>Картинка 3</figcaption>
+            </div>
+        </figure>
+        <figure>
+            <div class="imgWrapper">
+                <img src="https://boringapi.com/api/v1/static/photos/4.jpeg" alt="img 4">
+                <figcaption>Картинка 4</figcaption>
+            </div>
+        </figure>
+    </div>
+    <h2>Создайте форму с валидацией:</h2>
+    <form id="myForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required data-error="Name is required">
+        <div class="error-message" data-name-error></div>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required data-error="Valid email is required">
+        <div class="error-message" data-email-error></div>
+
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        // Адаптивное меню
+        const page1 = document.getElementById('page1-btn');
+        const page2 = document.getElementById('page2-btn');
+        const nav = document.getElementById('nav');
+        const cont = document.getElementById('SPAcontent');
+
+        page1.addEventListener('click', function() {
+            const state = { page: 1 };
+            history.pushState(state, 'Page 1', '#page1-btn');
+            nav.querySelectorAll('button').forEach(element => { // Если есть класс = удалить
+                if (element.classList.contains('active')) {
+                    element.classList.remove('active');
+                }
+            });
+            page1.classList.add('active');
+            cont.innerHTML = '<p>Content of Page 1.</p>'
+        });
+
+        page2.addEventListener('click', function() {
+            const state = { page: 1 };
+            history.pushState(state, 'Page 2', '#page2-btn');
+            nav.querySelectorAll('button').forEach(element => { // Если есть класс = удалить
+                if (element.classList.contains('active')) {
+                    element.classList.remove('active');
+                }
+            });
+            page2.classList.add('active');
+            cont.innerHTML = '<p>Content of Page 2.</p>'
+        });
+
+        // Галерея изображений
+
+        const gallery = document.querySelector('.gallery');
+        var dataEl = null;
+        var imgOrder = [];
+
+        if (localStorage) {
+            console.log(localStorage.getItem('imgOrder'));
+            // Тут можно восстановить порядок элементов после перезагрузки страницы
+            localStorage.clear();
+        }
+
+        gallery.querySelectorAll('figure').forEach(element => {
+            imgOrder.push(element);
+            element.addEventListener('dragstart', function(e) {
+                // console.log(e.target); // - перетаскиваемый элем.
+                if (e.target.tagName == 'IMG') {
+                    e.dataTransfer.setData('text/plain', e.target.parentNode.outerHTML);
+                    e.target.parentNode.id = 'active';
+                }
+            });
+        });
+  
+        gallery.addEventListener('dragover', function(e) {
+            e.preventDefault(); // Фон блока галереи во время перетаскивания
+            this.style.backgroundColor = '#f0f0f0';
+        });
+  
+        gallery.addEventListener('drop', function(e) {
+            dataEl = document.querySelector('#active'); // Перетаскиваемый эл.
+            if (e.target.tagName == 'IMG' && dataEl != e.target.parentNode) {
+                e.preventDefault();
+                const data = e.dataTransfer.getData('text/plain'); // Код перетаскиваемого элемента
+                let firstIndex = 0;
+                let secIndex = 0;
+
+                // console.log(e.target.parentNode); // Эл. куда перетащили
+
+                gallery.querySelectorAll('.imgWrapper').forEach((element, index) => {
+                    if (element == dataEl) {
+                        firstIndex = index; // Индекс перетаскиваемого элемента
+                        secondIndexToReplace = index;
+                    }
+                    if (element == e.target.parentNode) {
+                        secIndex = index;
+                        firstIndexToReplace = index;
+                    }
+                });
+                dataEl.id = '';
+
+                imgOrder[firstIndex] = dataEl.parentNode // Обновление порядка элементов;
+                imgOrder[secIndex] = e.target.parentNode.parentNode;
+
+                e.target.parentNode.parentNode.innerHTML = data;
+                //console.log(e.target.parentNode);
+
+                //dropEl.remove();
+                
+                
+                //this.replaceChild(data, e.target.parentNode);
+                dataEl.innerHTML = e.target.parentNode.innerHTML;
+
+                const order = imgOrder.map(element => element.querySelector('img').src);
+                localStorage.setItem("imgOrder", JSON.stringify(order)); // Сохранение порядка ссылок на картинки в галлереи
+
+                
+            }
+            this.style.backgroundColor = '';
+            dataEl = null;
+        });
+
+        // Создайте форму с валидацией:
+        const form = document.getElementById('myForm');
+        const sessionStorageKey = 'formData';
+
+        // Load data from sessionStorage
+        const storedData = sessionStorage.getItem(sessionStorageKey);
+        if (storedData) {
+            const formData = JSON.parse(storedData);
+            for (const key in formData) {
+                if (form.elements[key]) {
+                    form.elements[key].value = formData[key];
+                }
+            }
+        }
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = {};
+            let isValid = true;
+
+            // Validate form and collect data
+            for (let i = 0; i < form.elements.length; i++) {
+                const element = form.elements[i];
+                if (element.name) {
+                    if (!element.checkValidity()) {
+                        isValid = false;
+                        const errorKey = element.name + '-error';
+                        const errorMessage = element.dataset.error || 'Invalid input';
+                        document.querySelector(`[data-${errorKey}]`).textContent = errorMessage;
+
+                    } else {
+                        const errorKey = element.name + '-error';
+                        document.querySelector(`[data-${errorKey}]`).textContent = ''; // Clear error
+                    }
+                    formData[element.name] = element.value;
+                }
+            }
+
+            if (isValid) {
+                // Save data to sessionStorage
+                sessionStorage.setItem(sessionStorageKey, JSON.stringify(formData));
+                alert('Form submitted successfully! Data saved to sessionStorage.');
+                form.reset(); // Clear the form after submission
+                // Clear the sessionStorage after resetting the form
+                sessionStorage.removeItem(sessionStorageKey);
+            } else {
+                alert('Please correct the errors in the form.');
+            }
+        });
+    </script>
+</body>
+</html>
