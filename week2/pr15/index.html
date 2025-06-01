@@ -71,7 +71,7 @@
         <input type="email" id="email" name="email" required data-error="Valid email is required">
         <div class="error-message" data-email-error></div>
 
-        <button type="submit">Submit</button>
+        <button>Submit</button>
     </form>
     <script>
         // Адаптивное меню
@@ -190,7 +190,7 @@
             }
         }
 
-        form.addEventListener('submit', function(event) {
+        form.querySelector('button').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent the default form submission
 
             const formData = {};
@@ -204,6 +204,7 @@
                         isValid = false;
                         const errorKey = element.name + '-error';
                         const errorMessage = element.dataset.error || 'Invalid input';
+                        console.log(`[data-${errorKey}]`);
                         document.querySelector(`[data-${errorKey}]`).textContent = errorMessage;
 
                     } else {
