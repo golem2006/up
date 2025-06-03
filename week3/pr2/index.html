@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цели и задачи Json</title>
+</head>
+<body>
+    <h1>Пр.2 Цели и задачи Json</h1>
+
+    <script>
+         fetch("/user.json")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`); // Обработка ошибок HTTP
+                }
+                return response.json();
+            })
+            .then(users => {
+                users.forEach(user => {
+                    const paragraph = document.createElement('p'); // Создаем параграф
+                    paragraph.textContent = `${user.name} - ${user.age}`; // Заполняем его данными
+                    document.body.appendChild(paragraph); // Добавляем параграф в тело документа
+                    console.log(user.name, " - ", user.age);
+                });
+            })
+            .catch(error => {
+                console.error("Ошибка при получении данных:", error);
+                // Отобразить сообщение об ошибке на странице (например)
+                const errorMessage = document.createElement('p');
+                errorMessage.textContent = "Ошибка при загрузке пользователей.";
+                document.body.appendChild(errorMessage);
+            });
+    </script>
+</body>
+</html>

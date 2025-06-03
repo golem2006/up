@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Синтаксис JSON</title>
+    <style>
+        body {
+            padding: 0 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.3 Синтаксис JSON</h1>
+    <h2>Задание 1. Валидация JSON</h2>
+    <p>Перед вами 5 JSON-строк. Определите, какие из них валидны, а какие нет. Объясните ошибки.</p>
+    <pre>
+        2. Должны быть двойные ковычки
+          {
+            'name': 'Mike', 
+            "age": 30,
+            "married": false
+          }
+        3.  Не должно быть запятой в конце
+          {
+            "product": "Laptop",
+            "price": 999.99,
+            "specs": ["16GB RAM", "512GB SSD", "Intel i7"],
+          }
+        5. Запятая в конце массива
+          {
+            "company": "Tech Corp",
+            "founded": 2010,
+            "departments": ["Dev", "QA", "HR",]
+          }
+    </pre>
+    <h2>Задание 2. Создание JSON-структур</h2>
+    <p>Создайте валидные JSON-структуры для следующих сценариев: Профиль пользователя с полями, Товар в интернет-магазине</p>
+    <pre>
+          {
+            "имя": "Иван",
+            "фамилия": "Иванов",
+            "возраст": 30,
+            "email": "ivan.ivanov@example.com",
+            "адрес": {
+              "город": "Москва",
+              "улица": "Тверская",
+              "дом": "10"
+            },
+            "хобби": ["чтение", "путешествия", "спорт"]
+          }
+
+          {
+            "id_товара": 12345,
+            "название": "Футболка 'Суперкот'",
+            "цена": 999.99,
+            "доступные_размеры": ["S", "M", "L", "XL"],
+            "в_наличии": true,
+            "характеристики": {
+              "материал": "100% хлопок",
+              "цвет": "черный",
+              "стиль": "casual"
+            }
+          }
+    </pre>
+    <script>
+        // Задание 3. Преобразование объектов в JSON
+        const student = {
+          name: "Alex",
+          faculty: "Computer Science",
+          year: 2,
+          gpa: 4.5,
+          subjects: ["Algorithms", "Database", "Web Development"]
+        };
+
+        console.log('3 задание: ');
+        const jsonString = JSON.stringify(student, null, 10);
+        console.log(jsonString);
+
+        const parsedStudent = JSON.parse(jsonString);
+        console.log(parsedStudent.name);
+
+        // Задание 4. Работа с вложенными структурами
+        const university = {
+          "university": "State Technical University",
+          "founded": 1950,
+          "students": 15000,
+          "faculties": [
+            {
+              "name": "Computer Science",
+              "dean": "Dr. Smith",
+              "departments": 5,
+              "specialties": ["AI", "Software Engineering", "Data Science"]
+            },
+            {
+              "name": "Mechanics and mathematics",
+              "dean": "Dr. Smith jr.",
+              "departments": 2,
+              "specialties": ["Fundamental Mathematics and Mechanics", "Mathematics and Computer Science"]
+            }
+          ]
+        }
+        console.log('4 задание: ');
+        console.log(university);
+    </script>
+</body>
+</html>

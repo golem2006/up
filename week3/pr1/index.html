@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json</title>
+</head>
+<body>
+    <h1>Пр.1 Json</h1>
+<script>
+// Задание 1. Создание JSON-структуры
+var books = [
+{
+  "title": "1984",
+  "author": "George Orwell",
+  "year": 1949,
+  "isAvailable": true,
+  "genres": ["dystopia", "political fiction"]
+},
+{
+  "title": "Колобок",
+  "author": "Народная",
+  "year": 1873,
+  "isAvailable": true,
+  "genres": ["fairy tales", "horror"]
+},
+{
+  "title": "Мёртвые души",
+  "author": "Николай Гоголь",
+  "year": 1842,
+  "isAvailable": true,
+  "genres": ["poem"]
+}]
+console.log(books);
+
+// Задание 2. Преобразование JSON в строку и обратно
+const book = {
+  title: "1984",
+  author: "George Orwell",
+  year: 1949,
+  isAvailable: true,
+  genres: ["dystopia", "political fiction"]
+};
+
+const jsonString = JSON.stringify(book);
+console.log(jsonString);
+
+const parsedBook = JSON.parse(jsonString);
+console.log(parsedBook.title); // Должно вывести "1984"
+
+// Задание 3,4. Работа с файлами JSON (для Node.js) с обработкой ошибок - add_book.js
+</script>
+</body>
+</html>

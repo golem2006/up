@@ -1,0 +1,41 @@
+[
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "year": 1949,
+    "isAvailable": true,
+    "genres": [
+      "dystopia",
+      "political fiction"
+    ]
+  },
+  {
+    "title": "Колобок",
+    "author": "Народная",
+    "year": 1873,
+    "isAvailable": true,
+    "genres": [
+      "fairy tales",
+      "horror"
+    ]
+  },
+  {
+    "title": "Мёртвые души",
+    "author": "Николай Гоголь",
+    "year": 1842,
+    "isAvailable": true,
+    "genres": [
+      "poem"
+    ]
+  },
+  {
+    "title": "Brave New World",
+    "author": "Aldous Huxley",
+    "year": 1932,
+    "isAvailable": true,
+    "genres": [
+      "dystopia",
+      "science fiction"
+    ]
+  }
+]
