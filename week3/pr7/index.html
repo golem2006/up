@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Работа с объектом XMLHttpRequest</title>
+    <style>
+        body {
+            padding: 0 100px;
+        }
+        form > * {
+            display: block;
+            margin-bottom: 10px;
+        }
+        textarea {
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.7 Работа с объектом XMLHttpRequest</h1>
+    <p>🔹 Задание 1. Базовый GET-запрос</p>
+    <pre id="out1">Загрузка...</pre>
+    <p>🔹 Задание 2. POST-запрос с отправкой данных</p>
+    <form id="post-form">
+        <input type="text" id="title" placeholder="Заголовок" required>
+        <textarea type="text" id="body" placeholder="Содержание поста" required></textarea>
+        <button type="submit">Отправить</button>
+    </form>
+    <pre id="out2"></pre>
+    <script>
+        // Задание 1. Базовый GET-запрос
+        const out1 = document.getElementById('out1');
+        const out2 = document.getElementById('out2');
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/100', true);
+
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            data = JSON.parse(xhr.responseText);
+            console.log('Задание 1:');
+            console.log(data.title);
+            out1.textContent = `Успешный ответ (объект js):
+
+title: ${data.title}
+
+body: ${data.body}
+
+id: ${data.id}
+                
+userId: ${data.userId}
+            `;
+          } else {
+            console.error('Ошибка:', xhr.status);
+          }
+        };
+
+        xhr.onerror = function() {
+          out1.textContent = 'Что-то пошло не так';
+          console.error('Ошибка сети');
+        };
+
+        xhr.send();
+
+        // Задание 2. POST-запрос с отправкой данных
+        document.getElementById('post-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const xhr2 = new XMLHttpRequest();
+            xhr2.open('POST', 'https://jsonplaceholder.typicode.com/posts', true);
+            xhr2.setRequestHeader('Content-Type', 'application/json');
+            xhr2.onload = function() {
+              if (xhr2.status === 201) {
+                out2.textContent = 'Форма отправлена';
+                console.log('Задание 2:');
+                console.log('Данные успешно отправлены:', xhr2.responseText);
+              } else {
+                out2.textContent = 'Что-то пошло не так, попробуйте позже';
+              }
+            };
+
+            xhr2.onerror = function() {
+                out2.textContent = 'Что-то пошло не так, попробуйте позже';
+                console.error('Ошибка сети');
+            };
+        
+            const data = {
+              title: document.getElementById('title').value,
+              body: document.getElementById('body').value,
+              userId: 11234
+            };
+        
+            xhr2.send(JSON.stringify(data));
+        });
+
+        // Задание 3. Обработка состояния запроса
+        const xhr3 = new XMLHttpRequest();
+        xhr3.open('GET', 'https://jsonplaceholder.typicode.com/posts/1', true);
+        console.log('Задание 3:');
+        xhr3.onreadystatechange = function() {
+          
+          console.log(`Состояние: ${xhr3.readyState}`);
+        
+          if (xhr3.readyState === 4) {
+            if (xhr3.status === 200) {
+              
+              console.log('Запрос завершен:', xhr3.responseText);
+            } else {
+              console.error('Ошибка:', xhr3.status);
+            }
+          }
+        };
+
+        xhr3.send();
+
+        // Задание 4. Синхронный vs Асинхронный запрос
+        console.log('Задание 4:');
+        // Синхронный запрос
+        console.time('Синхронный');
+        const syncXhr = new XMLHttpRequest();
+        syncXhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1', false);
+        syncXhr.send();
+        console.timeEnd('Синхронный');
+
+        // Асинхронный запрос
+        console.time('Асинхронный');
+        const asyncXhr = new XMLHttpRequest();
+        asyncXhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1', true);
+        asyncXhr.onload = function() {
+          console.timeEnd('Асинхронный');
+        };
+        asyncXhr.send();
+
+
+    </script>
+</body>
+</html>

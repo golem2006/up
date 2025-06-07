@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=`, initial-scale=1.0">
+    <title>Версии jQuery</title>
+    <style>
+        body {
+            padding: 0 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.1 Версии jQuery</h1>
+    <button id="testBtn">Нажми меня</button>
+    <div id="output"></div>
+    <button id="testBtnBind">.bind</button>
+    <button id="testBtnOn">.on</button>
+    <!-- <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script> -->
+    <!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        console.log(jQuery.fn.jquery);
+        $(function() {
+         $("#testBtn").click(function() {
+           $("#output").html("Используется jQuery " + $.fn.jquery);
+         });
+        });
+
+        // Старый способ (1.6 и ниже)
+        $("#testBtnBind").bind("click", function() { console.log('.bind') });
+
+        // Новый способ (1.7+)
+        $("#testBtnOn").on("click", function() { console.log('.on') });
+
+        // jQuery 1.x-2.x
+        $.ajax({
+          url: "https://jsonplaceholder.typicode.com/todos/1",
+          success: function(data) { console.log(data); },
+          error: function() { console.log("Ошибка!"); }
+        });
+
+        // jQuery 3.x
+        $.ajax("https://jsonplaceholder.typicode.com/todos/1")
+          .done(function(data) { console.log(data); })
+          .fail(function() { console.log("Ошибка!"); });
+    </script>
+</body>
+</html>

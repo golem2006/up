@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=`, initial-scale=1.0">
+    <title>Селекторы в jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            padding: 0 100px;
+        }
+        .flex {
+            display: flex;
+        }
+        .container .block {
+            margin-right: 20px;
+            width: 200px;
+            height: 200px;
+            background-color: #aaaa;
+        }
+        .block {
+            width: fit-content;
+        }
+        form > input {
+            display: block;
+            margin-bottom: 10px;
+        }
+        form > input[type='checkbox'] {
+            display: inline;
+            margin-bottom: 10px;
+        }
+        .checked-element {
+            border: 2px solid green;
+        }
+        tbody > * {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="main-title">Пр.4 Селекторы в jQuery</h1>
+    <div class="container">
+        <p id="intro">Первый параграф</p>
+        <p class="highlight">Второй параграф</p>
+        <ul>
+          <li>Элемент 1</li>
+          <li class="special">Элемент 2</li>
+        </ul>
+    </div>
+
+      <table id="data">
+        <tr><td>Строка 1</td></tr>
+        <tr><td>Строка 2</td></tr>
+        <tr><td>Строка 3</td></tr>
+        <tr><td>Строка 4</td></tr>
+      </table>
+
+      <form>
+        <input type="text" name="login">
+        <input type="password" name="pwd" disabled>
+        <a href="https://example.com">Ссылка</a>
+      </form>
+
+      <div class="posts">
+        <article class="post">Пост 1</article>
+        <article class="post featured">Пост 2</article>
+        <article class="post">Пост 3</article>
+      </div>
+
+      <p>Самостоятельная работа</p>
+      <div class="container flex">
+        <div class="block"></div>
+        <div class="block"></div>
+        <div class="block"></div>
+        <div class="block"></div>
+        <div class="block"></div>
+      </div>
+
+      <form>
+        <input type="text" name="login" placeholder="login">
+        <input type="email" name="eml" placeholder="email">
+        <div class="block">
+            <input type="checkbox" id="check1" value="1">
+            <label for="check1">Чекбокс 1</label>
+        </div>
+        <div class="block">
+            <input type="checkbox" id="check2" value="2">
+        <label for="check2">Чекбокс 2</label>
+        </div>
+      </form>
+
+      <table id="last">
+        <tbody>
+            <tr>
+                <th>1</th>
+                <td>11</td>
+                <td>111</td>
+            </tr>
+            <tr>
+                <th>12</th>
+                <td>13</td>
+                <td>134</td>
+            </tr>
+        </tbody>
+      </table>
+    <script src="script.js"></script>
+</body>
+</html>

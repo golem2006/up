@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=`, initial-scale=1.0">
+    <title>Traversing - методы обхода DOM в jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            padding: 0 4vw;
+            overflow-x: hidden;
+        }
+        .active {
+            transform: scale(1.5);
+        }
+        .gallery {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .gallery > img {
+            width: 31%;
+            height: 16vw;
+            margin-right: 2vw;
+            transition: all 200ms ease-in-out;
+            border-radius: 1.5vw;
+            cursor: pointer;
+        }
+        .gallery img:nth-last-of-type(1) {
+            margin-right: 0;
+        }
+        .controls {
+            width: 100%;
+            text-align: center;
+            margin-top: 100px;
+            display: block;
+        }
+    </style>
+    <script src="script.js"></script>
+</head>
+<body>
+    <h1 id="main-title">Пр.5 Traversing - методы обхода DOM в jQuery</h1>
+    <div class="gallery">
+        <img src="https://boringapi.com/api/v1/static/photos/87.jpeg" alt="Image 1" class="active">
+        <img src="https://boringapi.com/api/v1/static/photos/53.jpeg" alt="Image 2">
+        <img src="https://boringapi.com/api/v1/static/photos/42.jpeg" alt="Image 3">
+        <div class="controls">
+            <button class="prev">Назад</button>
+            <button class="next">Вперед</button>
+        </div>
+    </div>
+</body>
+</html>

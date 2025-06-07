@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройка пользовательской сериализации в JSON. Метод toJSON()</title>
+</head>
+<body>
+    <h1>Пр.5 Настройка пользовательской сериализации в JSON. Метод toJSON()</h1>
+    <script>
+        // Задание 1. Базовая сериализация с toJSON()
+        class Book {
+            constructor(title, author, year, secretCode) {
+              this.title = title;
+              this.author = author;
+              this.year = year;
+              this.secretCode = secretCode;
+            }
+        
+            toJSON() {
+              const { secretCode, ...rest } = this;
+              return rest;
+            }
+        }
+
+        const book = new Book("1984", "Джордж Оруэлл", 1949, "ABC123");
+        console.log(JSON.stringify(book));
+        // Должно вывести: {"title":"1984","author":"Джордж Оруэлл","year":1949}
+
+        // Задание 2. Сериализация сложных объектов
+        class User {
+            constructor(name, lastLogin) {
+                this.name = name;
+                this.lastLogin = lastLogin; // Ожидаем, что lastLogin - это объект Date
+            }
+        
+            toJSON() {
+                // Преобразуем lastLogin в строку формата "YYYY-MM-DD"
+                const lastLoginFormatted = this.lastLogin
+                    ? this.lastLogin.toISOString().slice(0, 10) // toISOString выдает "YYYY-MM-DDTHH:mm:ss.sssZ", берем первые 10 символов
+                    : null; // Если lastLogin === null или undefined, то и формат будет null
+            
+                return {
+                    name: this.name,
+                    lastLogin: lastLoginFormatted // Используем отформатированное значение
+                };
+            }
+        }
+
+        // Пример использования:
+        const user = new User("Иван Иванов", new Date());  // Создаем пользователя с текущей датой
+
+        const jsonString = JSON.stringify(user); // Сериализуем объект user
+        console.log(jsonString);  // Вывод: {"name":"Иван Иванов","lastLogin":"YYYY-MM-DD"} (где YYYY-MM-DD - текущая дата)
+
+        // Задание 3. Кастомный сериализатор в JavaScript
+        const data = {
+          name: "Тест",
+          _secret: "123",
+          value: 42,
+          _temp: "delete_me"
+        };
+        
+        const json = JSON.stringify(data, (key, value) => {
+          if (key.startsWith('_')) return undefined;
+          return value;
+        });
+        
+        console.log(json); 
+        // {"name":"Тест","value":42}
+
+        // Задание 4. Сериализация вложенных структур
+        class Company {
+          constructor(name, ceo, employees) {
+            this.name = name;
+            this.ceo = ceo;
+            this.employees = employees;
+          }
+      
+          toJSON() {
+            return {
+              CEO: this.ceo,
+              name: this.name,
+              
+              employees: this.employees.map(e => e.name)
+            };
+          }
+        }
+
+        const employees = [{ name: "Анна" }, { name: "Петр" }];
+        const company = new Company("TechCorp", "Иван", employees);
+        console.log(JSON.stringify(company, null, 2));
+
+    </script>
+</body>
+</html>

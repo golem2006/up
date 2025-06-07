@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Синхронные и асинхронные запросы AJAX</title>
+</head>
+<body>
+    <h1>Пр.6 Синхронные и асинхронные запросы AJAX</h1>
+    <script>
+        // Задание 1. Синхронный AJAX (XMLHttpRequest)
+        // const xhrSync = new XMLHttpRequest();
+        // xhrSync.open('GET', 'https://jsonplaceholder.typicode.com/posts/1', false); // false = синхронный
+        // xhrSync.send();
+
+        // console.log("Запрос завершён:", xhrSync.responseText);
+        // alert("Это сообщение появится только после получения ответа!"); // UI заблокирован
+
+        // Задание 2. Асинхронный AJAX (XMLHttpRequest)
+        // const xhrAsync = new XMLHttpRequest();
+        // xhrAsync.open('GET', 'https://jsonplaceholder.typicode.com/posts/1', true); // true = асинхронный
+
+        // xhrAsync.onload = function() {
+        //   if (xhrAsync.status === 200) {
+        //     console.log("Данные получены:", JSON.parse(xhrAsync.responseText));
+        //   } else {
+        //     console.error("Ошибка:", xhrAsync.status);
+        //   }
+        // };
+
+        // xhrAsync.onerror = function() {
+        //   console.error("Ошибка сети!");
+        // };
+
+        // xhrAsync.send();
+        // console.log("Это сообщение появится сразу!"); // UI не блокируется
+
+        // Задание 3. Fetch API (Асинхронный + Promise)
+        // GET-запрос
+        // fetch('https://jsonplaceholder.typicode.com/posts/1')
+        //   .then(response => {
+        //     if (!response.ok) throw new Error("Ошибка HTTP: " + response.status);
+        //     return response.json();
+        //   })
+        //   .then(data => console.log("Данные:", data))
+        //   .catch(error => console.error("Ошибка:", error));
+        
+        // POST-запрос
+        // fetch('https://jsonplaceholder.typicode.com/posts', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ title: 'Новый пост', body: 'Текст...', userId: 1 })
+        // })
+        //   .then(response => response.json())
+        //   .then(data => console.log("Создан пост:", data));
+
+        // Задание 4. Сравнение скорости запросов
+        console.time("Синхронный запрос");
+        const xhrSync = new XMLHttpRequest();
+        xhrSync.open('GET', 'https://jsonplaceholder.typicode.com/posts', false);
+        xhrSync.send();
+        console.timeEnd("Синхронный запрос");
+                
+        console.time("Асинхронный запрос");
+        fetch('https://jsonplaceholder.typicode.com/posts')
+          .then(() => console.timeEnd("Асинхронный запрос"));
+
+
+    </script>
+</body>
+</html>

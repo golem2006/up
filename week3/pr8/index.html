@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методы и свойства объекта XMLHttpRequest</title>
+    <style>
+        body {
+            padding: 0 100px;
+        }
+        form > * {
+            display: block;
+            margin-bottom: 10px;
+        }
+        textarea {
+            resize: none;
+        }
+        .min {
+            color: rgb(98, 98, 98);
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Пр.1 Методы и свойства объекта XMLHttpRequest</h1>
+    <p><pre><span class="min">Откройте консоль</span></pre></p>
+    <h2>Задание 2. POST-запрос с данными</h2>
+    <button onclick="sendPost()">Отправить Post Запрос</button>
+    <button id="cancel">Отмена</button>
+    <h2>Задание 3. Работа с состояниями запроса</h2>
+    <progress max="4" value="0" id="progress"></progress>
+    <label for="progress">Прогресс бар</label>
+    <script>
+        // Задание 1. Базовый GET-запрос
+        const xhr = new XMLHttpRequest();
+
+        // Инициализация запроса
+        xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts/1', true);
+            
+        // Обработчик изменения состояния
+        xhr.onreadystatechange = function() {
+          console.log(`Текущее состояние: ${xhr.readyState}`);
+        
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                console.log('Все заголовки:', xhr.getAllResponseHeaders());
+                console.log('content-type:', xhr.getResponseHeader('content-type'));
+              console.log('Успешный ответ:', xhr.responseText);
+            } else {
+              console.error('Ошибка:', xhr.status, xhr.statusText);
+            }
+          }
+        };
+
+        xhr.onerror = function() {
+            console.error('Ошибка сети');
+        };
+        
+        // Отправка запроса
+        xhr.send();
+
+        // Задание 2. POST-запрос с данными
+        function sendPost() {
+            const postXhr = new XMLHttpRequest();
+            postXhr.open('POST', 'https://jsonplaceholder.typicode.com/posts', true);
+
+            
+
+            // Установка заголовков
+            postXhr.setRequestHeader('Content-Type', 'application/json');
+            
+            postXhr.timeout = 5000;
+
+            xhr.ontimeout = function() {
+                console.error('Превышено время ожидания');
+            };
+
+
+            postXhr.onload = function() {
+              if (postXhr.status === 201) {
+                console.log('Создан новый ресурс:', postXhr.responseText);
+              }
+            };
+
+            function cancel() {
+                console.log('Отправка прервана пользователем');
+                postXhr.abort();
+            }
+            document.getElementById('cancel').addEventListener('click', cancel);
+
+            const data = {
+              title: 'Новый пост',
+              body: 'Содержание поста',
+              userId: 1
+            };
+
+            postXhr.onerror = function() {
+                console.error('Ошибка сети');
+            };
+
+            postXhr.send(JSON.stringify(data));
+        }
+        
+        // Задание 3. Работа с состояниями запроса
+        const xhr3 = new XMLHttpRequest();
+        const progress = document.getElementById('progress');
+
+        xhr3.open('GET', 'https://jsonplaceholder.typicode.com/posts', true);
+
+        xhr3.onreadystatechange = function() {
+          switch(xhr3.readyState) {
+            case 1:
+              progress.value = 1;
+              console.log('Запрос инициализирован');
+              break;
+            case 2:
+              progress.value = 2;
+              console.log('Получены заголовки');
+              console.log('Статус:', xhr3.status);
+              break;
+            case 3:
+            progress.value = 3;
+              console.log('Идет загрузка данных...');
+              break;
+            case 4:
+              progress.value = 4;
+              console.log('Запрос завершен');
+              break;
+          }
+        };
+
+        xhr3.send();
+
+        //  Задание 4. Обработка ошибок и таймаутов
+
+        const xhr4 = new XMLHttpRequest();
+        xhr4.open('GET', 'https://jsonplaceholder.typicode.com/posts', true);
+
+        xhr4.timeout = 2000; // 2 секунды
+
+        xhr4.ontimeout = function() {
+          console.error('Превышено время ожидания');
+        };
+
+        xhr4.onerror = function() {
+          console.error('Ошибка сети');
+        };
+
+        xhr4.onload = function() {
+          if (xhr4.status !== 200) {
+            console.error('Ошибка сервера:', xhr4.status);
+            return;
+          }
+          console.log('Данные получены:', xhr4.response);
+        };
+
+        xhr4.send();
+
+    </script>
+</body>
+</html>
