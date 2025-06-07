@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Управление событиями</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .box {
+            width: 150px;
+            height: 150px;
+            margin: 20px;
+            background: #e0e0e0;
+            display: inline-block;
+        }
+        #log {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <button id="manualTrigger">Запустить вручную</button>
+    <button id="cancelButton">Отмена</button>
+    <div class="box" id="targetBox">Целевой элемент</div>
+    <div class="box" id="parentBox">
+        Родительский элемент
+        <div class="box" id="childBox">Дочерний элемент</div>
+    </div>
+    <div id="chain">Цепочка событий (нажать)</div>
+    
+    <div id="log"></div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

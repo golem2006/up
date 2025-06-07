@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Работа с методом css()</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #box {
+            width: 200px;
+            height: 200px;
+            background-color: #3498db;
+            margin: 20px;
+            padding: 15px;
+            border: 2px solid #2980b9;
+        }
+        .controls {
+            margin: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        .log {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="getStyles">Получить стили</button>
+        <button id="setStyles">Установить стили</button>
+        <button id="animateStyles">Анимировать</button>
+    </div>
+    
+    <div id="box">Изменяемый элемент</div>
+    
+    <div class="log" id="styleLog"></div>
+
+    <div id="resizable">Этот текст можно изменять</div>
+
+    <button id="increaseButton">Увеличить</button>
+    <button id="decreaseButton">Уменьшить</button>
+    <button id="resetButton">Сбросить</button>
+
+    <div>
+        Размер шрифта: <span id="fontSizeValue"></span>
+        Отступ: <span id="paddingValue"></span>
+    </div>
+
+    <div>
+        История изменений:
+        <ul id="historyList"></ul>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
