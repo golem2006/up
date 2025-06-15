@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>AJAX и jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Загрузка данных с сервера</h1>
+    <button id="loadData">Загрузить данные</button>
+    <div id="result"></div>
+
+    <form id="userForm">
+        <input type="text" id="name" placeholder="Имя" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <button type="submit">Отправить</button>
+    </form>
+    <div id="formResult"></div>
+
+    <button id="loadHTML">Загрузить контент</button>
+    <div id="htmlContent"></div>
+
+    <button id="loadJSON">Загрузить пользователей</button>
+<table id="usersTable" border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<p>Самостоятельная работа:</p>
+<form>
+    <input id="comm" placeholder="comment" type="text">
+    <button id="sendCom">Отправить</button>
+</form>
+<div id="comments">
+    Комментарии:
+</div>
+
+    <script>
+        $(document).ready(function() {
+            $("#loadData").click(function() {
+                $.get("https://jsonplaceholder.typicode.com/posts/1", function(data) {
+                    $("#result").html(`
+                        <h3>${data.title}</h3>
+                        <p>${data.body}</p>
+                    `);
+                },
+            ).fail(function() {
+                    $("#result").html("Ошибка загрузки данных!");
+                });
+            });
+            $("#userForm").submit(function(e) {
+                e.preventDefault(); // Отменяем стандартную отправку
+            
+                const name = $("#name").val();
+                const email = $("#email").val();
+            
+                $.post("https://jsonplaceholder.typicode.com/users", { name, email }, function(response) {
+                    $("#formResult").html(`Данные отправлены! ID: ${response.id}`);
+                    console.log(response);
+                }).fail(function() {
+                    $("#formResult").html("Ошибка отправки!");
+                });
+            });
+
+            $("#loadHTML").click(function() {
+                $("#htmlContent").load("partial.html"); // Можно заменить на реальный URL
+            });
+
+            $("#loadJSON").click(function() {
+                $.getJSON("https://jsonplaceholder.typicode.com/users", function(users) {
+                    let tableContent = "";
+                    users.forEach(user => {
+                        tableContent += `
+                            <tr>
+                                <td>${user.id}</td>
+                                <td>${user.name}</td>
+                                <td>${user.email}</td>
+                            </tr>
+                        `;
+                    });
+                    $("#usersTable tbody").html(tableContent);
+                });
+            });
+
+            $("#sendCom").click(function(event) {
+                event.preventDefault();
+                const com = $("#comm").val();
+            
+                $.post("https://jsonplaceholder.typicode.com/comments", { com }, function(response) {
+                    $("#comments").append(response.com + '<br>');
+                    console.log(response);
+                }).fail(function() {
+                    $("#formResult").html("Ошибка отправки!");
+                });
+            });
+        });
+    </script>
+</body>
+</html>

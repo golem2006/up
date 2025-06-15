@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery show() и hide()</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            padding: 0 100px;
+        }
+        #box {
+            width: 200px;
+            height: 200px;
+            background-color: #e74c3c;
+            margin: 20px;
+            position: absolute;
+            left: 100px;
+            top: 150px;
+        }
+        .control-panel {
+            margin: 20px;
+        }
+        button {
+            padding: 8px 12px;
+            margin: 5px;
+        }
+        .accordion {
+            width: 80%;
+            margin: 300px auto;
+        }
+        .accordion h3 {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .accordion div {
+            background: #f9f9f9;
+            /* padding: 0;
+            overflow: hidden;
+            height: 0; */
+        }
+        /* Стили для галереи */
+    .gallery {
+      display: flex;
+      overflow-x: auto; /* Горизонтальная прокрутка */
+      width: 80%;
+      margin: 20px auto;
+    }
+
+    .gallery-item {
+      position: relative; /* Для позиционирования подписи */
+      margin: 10px;
+      width: 200px;
+      height: 150px;
+      overflow: hidden; /* Обрезаем изображение, если оно больше контейнера */
+      cursor: pointer; /* Меняем курсор при наведении */
+      transition: transform 0.3s ease; /* Плавное изменение размера */
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Заполняем контейнер, обрезая изображение, если необходимо */
+      display: block; /* Убираем пробел под изображением */
+    }
+
+    .gallery-item figcaption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px;
+      text-align: center;
+      opacity: 0; /* Подпись изначально скрыта */
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.1); /* Увеличиваем при наведении */
+    }
+
+    .gallery-item:hover figcaption {
+      opacity: 1; /* Показываем подпись при наведении */
+    }
+
+    /* Стили для увеличенного изображения */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none; /* Слой изначально скрыт */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; /* Поверх всего */
+    }
+
+    #overlay img {
+      max-width: 100%;
+      max-height: 100%;
+      border: 5px solid white;
+    }
+
+    /* Кнопки навигации */
+    .nav-buttons {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .nav-buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    </style>
+</head>
+<body>
+    <div class="control-panel">
+        <button id="fadeOutBtn">fadeOut</button>
+        <button id="fadeInBtn">fadeIn</button>
+        <button id="fadeToggleBtn">fadeToggle</button>
+        <button id="slideUpBtn">slideUp</button>
+        <button id="slideDownBtn">slideDown</button>
+        <button id="slideToggleBtn">slideToggle</button>
+    </div>
+
+    <button id="moveRightBtn">Движение вправо</button>
+    <button id="moveDiagBtn">Движение по диагонали</button>
+    <button id="resizeBtn">Изменение размера</button>
+    <button id="multiEffectBtn">Множественные эффекты</button>
+    
+    <div id="box"></div>
+
+    <div class="accordion">
+        <h3>Раздел 1</h3>
+        <div>
+            <p>Содержимое раздела 1. jQuery - это быстрая, небольшая и многофункциональная библиотека JavaScript.</p>
+        </div>
+        <h3>Раздел 2</h3>
+        <div>
+            <p>Содержимое раздела 2. С помощью jQuery вы можете легко создавать анимационные эффекты.</p>
+        </div>
+        <h3>Раздел 3</h3>
+        <div>
+            <p>Содержимое раздела 3. Метод animate() позволяет создавать пользовательские анимации.</p>
+        </div>
+    </div>
+
+    <div class="gallery">
+        <figure class="gallery-item">
+          <img src="https://boringapi.com/api/v1/static/photos/1.jpeg" alt="1">
+          <figcaption>1</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <img src="https://boringapi.com/api/v1/static/photos/45.jpeg" alt="2">
+          <figcaption>2</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <img src="https://boringapi.com/api/v1/static/photos/13.jpeg" alt="3">
+          <figcaption>3</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <img src="https://boringapi.com/api/v1/static/photos/90.jpeg" alt="4">
+          <figcaption>4</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <img src="https://boringapi.com/api/v1/static/photos/14.jpeg" alt="5">
+          <figcaption>5</figcaption>
+        </figure>
+      </div>
+    
+      <div class="nav-buttons">
+        <button id="prevBtn">Влево</button>
+        <button id="nextBtn">Вправо</button>
+      </div>
+    
+      <div id="overlay">
+        <img src="" alt="Увеличенное изображение">
+      </div>
+    <script src="script.js"></script>
+</body>
+</html>

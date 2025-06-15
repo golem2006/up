@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery show() и hide()</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            padding: 0 100px;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .item {
+            padding: 10px;
+            margin: 5px;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+        }
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+        }
+        .admin {
+            border: 1px red solid;
+        }
+        #dynamicTable * {
+            border: 1px black solid;
+        }
+        #dynamicTable {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    #dynamicTable td {
+      padding: 8px;
+      text-align: center;
+    }
+    #gallery {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .image-container {
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        margin-right: 15px;
+    }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div id="list">
+        <div class="item">Элемент 1</div>
+        <div class="item">Элемент 2</div>
+        <div class="item">Элемент 3</div>
+    </div>
+    
+    <div class="controls">
+        <button id="addItem">Добавить элемент</button>
+        <button id="removeLast">Удалить последний</button>
+        <button id="changeText">Изменить текст</button>
+        <button id="highlightEven">Подсветить четные</button>
+    </div>
+  </div>
+
+
+  <div class="form-container">
+    <h3>Работа с формой</h3>
+    <form id="userForm">
+        <input type="text" id="nameInput" placeholder="Имя">
+        <input type="email" id="emailInput" placeholder="Email">
+        <select id="roleSelect">
+            <option value="student">Студент</option>
+            <option value="teacher">Преподаватель</option>
+            <option value="admin">Администратор</option>
+        </select>
+        <button id="clear">Отчистить форму</button>
+        <button type="submit">Отправить</button>
+    </form>
+    
+    <div id="formOutput" style="margin-top: 20px;"></div>
+</div>
+
+<div class="table-controls">
+    <button id="addRow">Добавить строку</button>
+    <button id="addColumn">Добавить столбец</button>
+    <button id="removeLastRow">Удалить последнюю строку</button>
+    <input type="text" id="cellText" placeholder="Текст для ячеек">
+</div>
+
+<table id="dynamicTable">
+    <tr>
+        <td>Ячейка 1-1</td>
+        <td>Ячейка 1-2</td>
+    </tr>
+    <tr>
+        <td>Ячейка 2-1</td>
+        <td>Ячейка 2-2</td>
+    </tr>
+</table>
+<div id="gallery">
+    <div class="image-container">
+        <img src="https://imgholder.ru/150/FAAFA/FFFFFF.jpg&font=kelson" data-desc="data-desc 1">
+        <span class="description">Изображение 1</span>
+    </div>
+    <div class="image-container">
+        <img src="https://imgholder.ru/150/0000FF/FFFFFF.jpg&font=kelson" data-desc="data-desc 2">
+        <span class="description">Изображение 2</span>
+    </div>
+</div>
+
+<div class="gallery-controls">
+    <button id="swapImages">Поменять местами</button>
+    <button id="cloneFirst">Клонировать первое</button>
+    <button id="changeAttr">Изменить атрибуты</button>
+</div>
+    <script src="script.js"></script>
+</body>
+</html>

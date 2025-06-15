@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ПР 14 Использование jQuery-плагинов</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+    <style>
+        .slider img { width: 93%; max-height: 400px; object-fit: cover; margin: 0 auto; }
+        body {
+            overflow-x: hidden;
+            padding: 0 100px;
+        }
+        .slick-arrow {
+            z-index: 2;
+            width: 50px;
+        }
+        .slick-prev:before, .slick-next:before {
+            z-index: 2;
+            font-size: 50px;
+            color: black;
+        }
+        .error { color: red; }
+        .stick {
+            position: sticky;
+            top: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ПР 14 Использование jQuery-плагинов</h1>
+    <h2>1. Слайдер изображений (Slick Carousel)</h2>
+    <div class="slider">
+        <div><img src="https://imgholder.ru/150/FAAFA/FFFFFF.jpg&font=kelson" alt="Slide 1"></div>
+        <div><img src="https://imgholder.ru/150/FAAFA/FFFFFF.jpg&font=kelson" alt="Slide 2"></div>
+        <div><img src="https://imgholder.ru/150/FAAFA/FFFFFF.jpg&font=kelson" alt="Slide 3"></div>
+    </div>
+
+    <h2>2. Валидация формы (jQuery Validation)</h2>
+    <form id="contactForm">
+        <input type="text" name="name" placeholder="Имя" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <textarea name="message" placeholder="Сообщение" required></textarea>
+        <button type="submit">Отправить</button>
+    </form>
+
+    <h2>3. Модальное окно (Magnific Popup)</h2>
+    <a href="https://imgholder.ru/150/FAAFA/FFFFFF.jpg&font=kelson" class="popup-image gallery">
+        <img src="https://imgholder.ru/150/FAAFA/FFFFFF.jpg&font=kelson" alt="Изображение">
+    </a>
+    <a href="https://imgholder.ru/150/FAAFA/FFFFFF.jpg&font=kelson" class="popup-image gallery">
+        <img src="https://imgholder.ru/150/FAAFA/FFFFFF.jpg&font=kelson" alt="Изображение">
+    </a>
+
+    <h2>4. Анимация прокрутки (Smooth Scroll)</h2>
+    <nav class="stick">
+        <a href="#section1">Раздел 1</a>
+        <a href="#section2">Раздел 2</a>
+        <a href="#section3">Раздел 3</a>
+        <a href="#section4">Раздел 4</a>
+        <a href="#section5">Раздел 5</a>
+    </nav>
+
+    <div id="section1" style="height: 500px; background: #f0f0f0;">Раздел 1</div>
+    <div id="section2" style="height: 500px; background: #e0e0e0;">Раздел 2</div>
+    <div id="section3" style="height: 500px; background: #d0d0d0;">Раздел 3</div>
+    <div id="section4" style="height: 500px; background: #a49b9b;">Раздел 4</div>
+    <div id="section5" style="height: 500px; background: #4b4848;">Раздел 5</div>
+
+    <h2>Дополнительное задание. Календарь (Datepicker)</h2>
+    <p>Date: <input type="text" id="datepicker"></p>  
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
+    
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>jquery.ui.datepicker-ru.js
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+    <script>
+        $(document).ready(function(){
+            $('.slider').slick({
+                dots: true,
+                infinite: true,
+                speed: 2000,
+                slidesToShow: 1,
+                adaptiveHeight: true,
+                autoplay: true,
+                arrows: true
+            });
+
+            $("#contactForm").validate({
+                rules: {
+                    name: "required",
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    message: "required"
+                },
+                messages: {
+                    name: "Введите имя",
+                    email: {
+                        required: "Введите email",
+                        email: "Некорректный email"
+                    },
+                    message: "Введите сообщение"
+                },
+                submitHandler: function(form) {
+                    alert("Форма отправлена!");
+                    // form.submit(); // Раскомментировать для реальной отправки
+                }
+            });
+            $('.popup-image').magnificPopup({
+                type: 'image',
+                closeOnContentClick: true,
+                mainClass: 'mfp-img-mobile',
+                image: {
+                    verticalFit: true
+                }
+            });
+
+            $('nav a').on('click', function(e) {
+                e.preventDefault();
+                $('html, body').animate({
+                    scrollTop: $($(this).attr('href')).offset().top - 25
+                }, 800);
+            });
+
+            $(function(){  
+                $("#datepicker").datepicker({
+                    changeYear: true,
+                });
+                $.datepicker.regional['ru'] = {
+                    closeText: 'Закрыть',
+                    prevText: '&#x3c;Пред',
+                    nextText: 'След&#x3e;',
+                    currentText: 'Сегодня',
+                    monthNames: [
+                        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+                    ],
+                    monthNamesShort: [
+                        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+                    ],
+                    dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+                    dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
+                    dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                    weekHeader: 'Нед',
+                    dateFormat: 'dd.mm.yy',
+                    firstDay: 1,
+                    isRTL: false,
+                    showMonthAfterYear: false,
+                    yearSuffix: '',
+                    changeYear: true,
+                    changeMonth: true
+                };
+                
+                $.datepicker.setDefaults($.datepicker.regional['ru']);
+                $("#datepicker").datepicker($.datepicker.regional["ru"]);
+            }); 
+        });
+    </script>
+</body>
+</html>
